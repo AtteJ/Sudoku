@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Sudoku</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <string name="new_game">New Game</string>
+    <string name="stats">Stats</string>
+    <string name="go_back">Go Back</string>
+
+    <string name="best_times">Best Times</string>
+
+    <string name="choose_difficulty">Choose Difficulty</string>
+    <string name="easy">Easy</string>
+    <string name="normal">Normal</string>
+    <string name="hard">Hard</string>
+
+    <string name="butt1">1</string>
+    <string name="butt2">2</string>
+    <string name="butt3">3</string>
+    <string name="butt4">4</string>
+    <string name="butt5">5</string>
+    <string name="butt6">6</string>
+    <string name="butt7">7</string>
+    <string name="butt8">8</string>
+    <string name="butt9">9</string>
+    <string name="butt_note">Note</string>
+    <string name="butt_del"> Del </string>
+</resources>

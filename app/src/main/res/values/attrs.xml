@@ -1,0 +1,8 @@
+<resources>
+    <declare-styleable name="Cell">
+        <attr name="note" format="boolean" />
+        <attr name="Text" format="string" />
+        <attr name="Number" format="integer" />
+        <attr name="android:ems" />
+    </declare-styleable>
+</resources>

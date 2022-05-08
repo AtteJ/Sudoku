@@ -1,0 +1,23 @@
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="1"
+    android:rowCount="1"
+    android:alignmentMode="alignMargins"
+    android:useDefaultMargins="true"
+    android:orientation="horizontal"
+    android:stretchColumns="*"
+    >
+
+    <TextView
+        android:id="@+id/fragment_cell_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        />
+
+</TableLayout>
+
+
+
