@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -65,8 +66,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private Handler handler;
     private int Seconds, Minutes, MilliSeconds ;
 
-    private String FILENAME = "SavedTimes.dat";
-    private Stats stats = new Stats();
+    private Stats stats;
 
 
     @Override
@@ -74,7 +74,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        readData();
+        stats = new Stats(getApplicationContext());
 
         difficulty = getIntent().getIntExtra("difficulty", 0);
         createBoard();
@@ -232,7 +232,10 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
     public void gameWon() {
         stopTimer();
-        saveData();
+        int seconds = (int) (UpdateTime / 1000);
+        GameRecord record = new GameRecord(seconds, difficulty);
+        stats.addRecord(record);
+        stats.saveStats();
         new AlertDialog.Builder(this)
                 .setTitle("Game won!")
                 .setMessage("Game won!  Time: " + String.format("%02d:%02d", Minutes, Seconds))
@@ -244,8 +247,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                         intent.putExtra("Lost", 0);
                         setResult(1, intent);
                         finish();
-                    }})
-                .setNegativeButton(android.R.string.no, null).show();
+                    }}).show();
     }
 
 
@@ -460,44 +462,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                 clickedCell.setBackground(getResources().getDrawable(R.drawable.table_border_cell_wrong_selected));
             else
                 clickedCell.setBackground(getResources().getDrawable(R.drawable.table_border_cell_selected));
-        }
-    }
-
-
-    private void saveData() {
-        byte[] data = new byte[3];
-        data[0] = (byte) Seconds;
-        data[1] = (byte) '|';
-        data[2] = (byte) difficulty;
-        try {
-            FileOutputStream fo = getApplicationContext().openFileOutput(FILENAME, Context.MODE_PRIVATE);
-            fo.write(data);
-            fo.close();
-        } catch (FileNotFoundException e) {
-            System.err.println(e.getMessage());
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-
-
-    private void readData() {
-        File file = new File(FILENAME);
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            String[] record;
-
-            while((line = br.readLine()) != null) {
-                record = line.split("|");
-                stats.addRecord(new GameRecord(Integer.parseInt(record[0]), Integer.parseInt(record[1])));
-            }
-            br.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
