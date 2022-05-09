@@ -1,26 +1,19 @@
 package com.attej.sudoku.backend;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.GridLayout;
-import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.attej.sudoku.R;
 
-import java.util.ArrayList;
-
 public class Cell extends TableLayout {
     TableLayout layout;
     private TextView number;
-    private TextView[] notes = new TextView[9];
+    private final TextView[] notes = new TextView[9];
     private int num = 0;
     private boolean note = false;
     private boolean startingCell;
@@ -60,9 +53,9 @@ public class Cell extends TableLayout {
         notes[6] = layout.findViewById(R.id.note_7);
         notes[7] = layout.findViewById(R.id.note_8);
         notes[8] = layout.findViewById(R.id.note_9);
-        for (int i = 0; i < notes.length; i++) {
-            notes[i].setTextSize(0);
-            notes[i].setText("");
+        for (TextView textView : notes) {
+            textView.setTextSize(7);
+            textView.setText("");
         }
         invalidate();
         requestLayout();
@@ -78,7 +71,7 @@ public class Cell extends TableLayout {
         if (num != 0) {
             createMainView();
             number.setTextSize(15);
-            number.setText("" + num);
+            number.setText(String.valueOf(num));
         }
         else {
             number.setTextSize(0);
@@ -103,8 +96,7 @@ public class Cell extends TableLayout {
             if (value != 0) {
                 if (notes[value-1].getText().equals("")) {
                     note = true;
-                    notes[value - 1].setTextSize(7);
-                    notes[value - 1].setText("" + value);
+                    notes[value - 1].setText(String.valueOf(value));
                 }
                 else {
                     notes[value-1].setText("");
@@ -117,13 +109,6 @@ public class Cell extends TableLayout {
 
     public void removeNote(int value) {
         notes[value-1].setText("");
-    }
-
-
-    public void clearNotes() {
-        for (int i = 0; i < notes.length; i++) {
-            notes[i].setText("");
-        }
     }
 
 

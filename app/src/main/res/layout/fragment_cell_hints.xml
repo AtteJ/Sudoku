@@ -3,40 +3,48 @@
     android:layout_height="match_parent"
     android:columnCount="3"
     android:rowCount="3"
-    android:alignmentMode="alignMargins"
-    android:useDefaultMargins="true"
     android:orientation="horizontal"
     >
 
     <TableRow
-        android:layout_width="0dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="3dp"
+        android:layout_weight="1">
         <TextView
             android:id="@+id/note_1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
             />
         <TextView
             android:id="@+id/note_2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
             />
         <TextView
             android:id="@+id/note_3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
             />
     </TableRow>
 
     <TableRow
-        android:layout_width="0dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="3dp"
+        android:layout_weight="1">
 
         <TextView
             android:id="@+id/note_4"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
             />
         
@@ -44,34 +52,42 @@
             android:id="@+id/note_5"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
             />
         <TextView
             android:id="@+id/note_6"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
             />
     </TableRow>
 
     <TableRow
-        android:layout_width="0dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="3dp"
+        android:layout_weight="1">
         <TextView
             android:id="@+id/note_7"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
             />
         <TextView
             android:id="@+id/note_8"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
             />
         <TextView
             android:id="@+id/note_9"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
             />
     </TableRow>

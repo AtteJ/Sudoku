@@ -5,7 +5,6 @@ import android.content.Context;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,9 +12,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class Stats {
-    private Context context;
-    private ArrayList<GameRecord> records = new ArrayList<GameRecord>();
-    private String FILENAME = "game_stats.dat";
+    private final Context context;
+    private final ArrayList<GameRecord> records = new ArrayList<>();
+    private final String FILENAME = "game_stats.dat";
 
     private int experience = 0;
 
@@ -104,7 +103,7 @@ public class Stats {
 
     public void clearStats() {
         records.clear();
-
+        saveStats();
     }
 
 
@@ -113,12 +112,12 @@ public class Stats {
         File file = new File(context.getFilesDir(), FILENAME);
         try {
             FileWriter writer = new FileWriter(file);
-            String data = experience + "";
-            writer.write(data + "\n");
+            String data = experience + "\n";
+            writer.write(data);
             for (int i = 0; i < records.size(); i++) {
-                data = records.get(i).getTimeSeconds() + "|" + records.get(i).getDifficulty();
+                data = records.get(i).getTimeSeconds() + "|" + records.get(i).getDifficulty() + "\n";
                 System.out.println(data);
-                writer.append(data + "\n");
+                writer.append(data);
             }
             writer.flush();
             writer.close();
@@ -162,8 +161,6 @@ public class Stats {
                 }
             }
             br.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

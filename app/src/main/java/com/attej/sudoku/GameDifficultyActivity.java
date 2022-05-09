@@ -3,9 +3,6 @@ package com.attej.sudoku;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,6 +28,8 @@ public class GameDifficultyActivity extends AppCompatActivity {
         intent.putExtra("difficulty", difficulty);
         startActivityForResult(intent, 0);
     }
+
+
     public void onDifficultyButtonClicked(View view) {
         disableButtons(true);
 

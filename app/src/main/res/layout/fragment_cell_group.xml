@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/table_border_group"
     android:stretchColumns="false"
     tools:context="com.attej.sudoku.backend.CellGroupFragment">
@@ -23,7 +22,6 @@
             android:gravity="center"
             android:textAlignment="center"
             android:background="@drawable/table_border_cell"
-            android:layout_marginLeft="2dp"
             android:layout_marginTop="2dp"
             android:tag="0"
             android:layout_marginStart="2dp"
@@ -53,12 +51,9 @@
             android:gravity="center"
             android:textAlignment="center"
             android:layout_marginTop="2dp"
-            android:layout_marginRight="1dp"
             android:background="@drawable/table_border_cell"
             android:tag="2"
-            android:layout_marginEnd="1dp"
-            android:layout_below="@+id/fragment_cell"
-            />
+            android:layout_marginEnd="1dp" />
     </TableRow>
 
     <TableRow
@@ -75,7 +70,6 @@
             android:minHeight="30dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:layout_marginLeft="2dp"
             android:textAlignment="center"
             android:background="@drawable/table_border_cell"
             android:tag="3"
@@ -104,7 +98,6 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
-            android:layout_marginRight="1dp"
             android:background="@drawable/table_border_cell"
             android:tag="5"
             android:layout_marginEnd="1dp"
@@ -126,7 +119,6 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
-            android:layout_marginLeft="2dp"
             android:layout_marginBottom="2dp"
             android:background="@drawable/table_border_cell"
             android:tag="6"
@@ -157,7 +149,6 @@
             android:gravity="center"
             android:textAlignment="center"
             android:layout_marginBottom="2dp"
-            android:layout_marginRight="1dp"
             android:background="@drawable/table_border_cell"
             android:tag="8"
             android:layout_marginEnd="1dp"

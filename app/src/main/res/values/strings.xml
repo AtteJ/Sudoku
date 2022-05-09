@@ -8,13 +8,29 @@
     <string name="stats">Stats</string>
     <string name="go_back">Go Back</string>
 
-    <string name="best_times">Game Stats</string>
+    <string name="game_stats">Game Stats</string>
     <string name="clear_stats">Clear Stats</string>
+    <string name="best_time">Best Time: %1$02d\:%2$02d</string>
+    <string name="no_best_time">Best Time:</string>
+    <string name="average_time">Average Time: %1$02d:%2$02d</string>
+    <string name="no_average_time">Average Time:</string>
+    <string name="win_percentage">Win Percentage: %1$d%%</string>
+    <string name="games_won">Games Won: %1$d</string>
+    <string name="games_played">Games Played: %1$d</string>
+
+    <string name="level">Level: %1$d</string>
+    <string name="experience">Experience: %1$d/100</string>
 
     <string name="choose_difficulty">Choose Difficulty</string>
     <string name="easy">Easy</string>
     <string name="normal">Normal</string>
     <string name="hard">Hard</string>
+
+    <string name="game_won_message">Game Won! Time: %1$02d:%2$02d</string>
+
+    <string name="mistakes">Mistakes: %1$d/3</string>
+    <string name="hints">Hints: %1$d/1</string>
+    <string name="timer">%1$02d:%2$02d</string>
 
     <string name="butt1">1</string>
     <string name="butt2">2</string>

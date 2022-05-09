@@ -1,9 +1,9 @@
 package com.attej.sudoku.backend;
 
-import java.util.ArrayList;
+import androidx.annotation.NonNull;
 
 public class Board {
-    private int[][] gameCells = new int[9][9];
+    private final int[][] gameCells = new int[9][9];
 
     public Board() {
 
@@ -33,9 +33,7 @@ public class Board {
 
     public void copyValues(int[][] newGameCells) {
         for (int i = 0; i < newGameCells.length; i++) {
-            for (int j = 0; j < newGameCells[i].length; j++) {
-                gameCells[i][j] = newGameCells[i][j];
-            }
+            System.arraycopy(newGameCells[i], 0, gameCells[i], 0, newGameCells[i].length);
         }
     }
 
@@ -47,35 +45,34 @@ public class Board {
 
     public boolean isNumberLeft(int number) {
         int sum = 0;
-        for (int i = 0; i < gameCells.length; i++) {
-            for (int j = 0; j < gameCells[i].length; j++) {
-                if (gameCells[i][j] == number)
+        for (int[] gameCell : gameCells) {
+            for (int i : gameCell) {
+                if (i == number)
                     sum++;
             }
         }
-        if (sum < 9)
-            return true;
-        return false;
+        return sum < 9;
     }
 
 
+    @NonNull
     @Override
     public String toString() {
         StringBuilder temp = new StringBuilder();
-        for (int i = 0; i < gameCells.length; i++) {
-            for (int j = 0; j < gameCells[i].length; j++) {
+        for (int[] gameCell : gameCells) {
+            for (int j = 0; j < gameCell.length; j++) {
                 if (j == 0) {
                     temp.append("\n");
                 }
 
-                int currentNumber = gameCells[i][j];
+                int currentNumber = gameCell[j];
                 if (currentNumber == 0) {
                     temp.append("-");
                 } else {
                     temp.append(currentNumber);
                 }
 
-                if (j != (gameCells[i].length-1)) {
+                if (j != (gameCell.length - 1)) {
                     temp.append(" ");
                 }
             }

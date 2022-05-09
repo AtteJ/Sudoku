@@ -2,10 +2,7 @@ package com.attej.sudoku;
 
 import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -17,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.attej.sudoku.backend.Board;
 import com.attej.sudoku.backend.Cell;
@@ -26,17 +24,6 @@ import com.attej.sudoku.backend.GameRecord;
 import com.attej.sudoku.backend.GenerateSudoku;
 import com.attej.sudoku.backend.Stats;
 
-import org.w3c.dom.Text;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -44,12 +31,11 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private Cell clickedCell;
     private Cell previouslySelected;
 
-    private ArrayList<Cell> wrongCells = new ArrayList<Cell>();
+    private final ArrayList<Cell> wrongCells = new ArrayList<>();
 
     private int clickedGroup;
     private int clickedCellId;
     private int difficulty = 1;
-    private int givens = 0;
     private int mistakes = 0;
     private int hintsLeft = 1;
 
@@ -65,9 +51,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private TextView mistakesText;
     private TextView hintsText;
 
-    private long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L ;
+    private long millisecondTime, startTime, timeBuff, updateTime = 0L ;
     private Handler handler;
-    private int Seconds, Minutes, MilliSeconds ;
+    private int minutes;
 
     private Stats stats;
 
@@ -97,9 +83,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
 
     private void createSudoku(int difficulty) {
-        givens = generateGivens(difficulty);
+        int givens = generateGivens(difficulty);
         solution = new Board(GenerateSudoku.getSolution());
-        startBoard = new Board(GenerateSudoku.removeNumbers(solution.getGameCells(), 81-givens));
+        startBoard = new Board(GenerateSudoku.removeNumbers(solution.getGameCells(), 81- givens));
         currentBoard = new Board();
         currentBoard.copyValues(startBoard.getGameCells());
 
@@ -111,7 +97,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                 R.id.cellGroupFragment5, R.id.cellGroupFragment6, R.id.cellGroupFragment7, R.id.cellGroupFragment8, R.id.cellGroupFragment9};
         for (int i = 1; i < 10; i++) {
             CellGroupFragment thisCellGroupFragment = (CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragments[i-1]);
-            thisCellGroupFragment.setGroupId(i);
+            if (thisCellGroupFragment != null)
+                thisCellGroupFragment.setGroupId(i);
         }
     }
 
@@ -133,7 +120,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                 int currentValue = currentBoard.getValue(i, j);
 
                 if (currentValue != 0) {
-                    tempCellGroupFragment.setValue(groupPosition, currentValue, true);
+                    if (tempCellGroupFragment != null)
+                        tempCellGroupFragment.setValue(groupPosition, currentValue, true);
                 }
             }
         }
@@ -163,8 +151,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
 
     private void updateCounters() {
-        mistakesText.setText("Mistakes: " + mistakes + "/3");
-        hintsText.setText("Hints Left: " + hintsLeft + "/1");
+        mistakesText.setText(String.format(getString(R.string.mistakes), mistakes));
+        hintsText.setText(String.format(getString(R.string.hints), hintsLeft));
         if (mistakes >= 3)
             gameLost();
     }
@@ -188,7 +176,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
         checkAddedNumber(num, previousNumber);
 
-        removeMatchingNotes(num);
+        if (num != 0)
+            removeMatchingNotes(num);
         refreshCellColors();
     }
 
@@ -202,7 +191,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
             if (!wrongCells.contains(clickedCell))
                 wrongCells.add(clickedCell);
         }
-        if(checkNumber() && wrongCells.contains(clickedCell))
+        if(checkNumber())
             wrongCells.remove(clickedCell);
 
         if (CheckSolution.checkGrid(currentBoard) && checkBoard())
@@ -213,16 +202,12 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private boolean checkNumber() {
         int row = ((clickedGroup - 1) / 3) * 3 + (clickedCellId / 3);
         int column = ((clickedGroup - 1) % 3) * 3 + ((clickedCellId) % 3);
-        if (clickedCell.getNumber() == solution.getGameCells()[row][column])
-            return true;
-        return false;
+        return clickedCell.getNumber() == solution.getGameCells()[row][column];
     }
 
 
     private boolean checkNumber(int row, int col) {
-        if (currentBoard.getGameCells()[row][col] == solution.getGameCells()[row][col])
-            return true;
-        return false;
+        return currentBoard.getGameCells()[row][col] == solution.getGameCells()[row][col];
     }
 
 
@@ -239,71 +224,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
     public void setNote(int num) {
         clickedCell.setNote(num);
-    }
-
-
-    public void gameWon() {
-        stopTimer();
-        int seconds = (int) (UpdateTime / 1000);
-        GameRecord record = new GameRecord(seconds, difficulty);
-        if (difficulty == 0)
-            stats.addExperience(5);
-        if (difficulty == 1)
-            stats.addExperience(10);
-        if (difficulty == 2)
-            stats.addExperience(15);
-        stats.addRecord(record);
-        stats.saveStats();
-        new AlertDialog.Builder(this)
-                .setTitle("Game won!")
-                .setMessage("Game won!  Time: " + String.format("%02d:%02d", Minutes, Seconds))
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton("New game?", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        Intent intent = new Intent();
-                        intent.putExtra("Lost", 0);
-                        setResult(1, intent);
-                        finish();
-                    }})
-                .setNegativeButton("Go Home?", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent();
-                        intent.putExtra("Lost", 1);
-                        setResult(2, intent);
-                        finish();
-                    }
-                }).setCancelable(false).show();
-    }
-
-
-    private void gameLost() {
-        stopTimer();
-        GameRecord record = new GameRecord(-1, difficulty);
-        stats.addRecord(record);
-        stats.saveStats();
-        new AlertDialog.Builder(this)
-                .setTitle("Game Lost!")
-                .setMessage("Game Lost!")
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton("New game?", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        Intent intent = new Intent();
-                        intent.putExtra("Lost", 1);
-                        setResult(1, intent);
-                        finish();
-                    }})
-                .setNegativeButton("Go Home?", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent();
-                        intent.putExtra("Lost", 1);
-                        setResult(2, intent);
-                        finish();
-                    }
-                }).setCancelable(false).show();
     }
 
 
@@ -356,11 +276,11 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
     private void setNumButtColors() {
         Button[] butts = getNumButts();
-        for (int i = 0; i < butts.length; i++) {
+        for (Button butt : butts) {
             if (note)
-                butts[i].setBackgroundColor(getResources().getColor(R.color.note_selected));
+                butt.setBackgroundColor(getResources().getColor(R.color.note_selected));
             else
-                butts[i].setBackgroundColor(getResources().getColor(R.color.purple_500));
+                butt.setBackgroundColor(getResources().getColor(R.color.purple_500));
         }
     }
 
@@ -434,19 +354,17 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                 .setTitle("Quit")
                 .setMessage("Do you really want to quit? This will be counted as a loss.")
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                    GameRecord record = new GameRecord(-1, difficulty);
+                    stats.addRecord(record);
+                    stats.saveStats();
 
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        GameRecord record = new GameRecord(-1, difficulty);
-                        stats.addRecord(record);
-                        stats.saveStats();
+                    Intent intent = new Intent();
+                    intent.putExtra("Lost", 1);
+                    setResult(1, intent);
 
-                        Intent intent = new Intent();
-                        intent.putExtra("Lost", 1);
-                        setResult(1, intent);
-
-                        finish();
-                    }})
+                    finish();
+                })
                 .setNegativeButton(android.R.string.no, null).show();
     }
 
@@ -459,17 +377,17 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
 
     private void removeMatchingNotes(int value) {
-        int row = (int)Math.floor(clickedCellId/3);
-        int column = clickedCellId%3;
-        int fragmentRow = (int)Math.floor((clickedGroup-1)/3);
+        int row = (int)Math.floor(clickedCellId / 3.0);
+        int column = clickedCellId % 3;
+        int fragmentRow = (int)Math.floor((clickedGroup - 1) / 3.0);
         int fragmentColumn = (clickedGroup - 1)%3;
         int fragmentNumber = clickedGroup-1;
         CellGroupFragment subgrid = (CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragments[fragmentNumber]);
         // Removes notes from the same subgrid
         for (int i = 0; i < 9; i++) {
-            if (subgrid.getCell(i).isNote()) {
-                subgrid.getCell(i).removeNote(value);
-            }
+            if (subgrid != null)
+                if (subgrid.getCell(i).isNote())
+                    subgrid.getCell(i).removeNote(value);
         }
         removeNotesOnRow(value, row, fragmentNumber);
         removeNotesOnColumn(value, fragmentRow, fragmentColumn, column);
@@ -483,9 +401,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                 CellGroupFragment fragmentOnRow = (CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragments[fragmentNumber - (i+1)]);
                 for (int j = 0; j < 3; j++) {
                     int cellId = row * 3 + j;
-                    if (fragmentOnRow.getCell(cellId).isNote()) {
-                        fragmentOnRow.getCell(cellId).removeNote(value);
-                    }
+                    if (fragmentOnRow != null)
+                        if (fragmentOnRow.getCell(cellId).isNote())
+                            fragmentOnRow.getCell(cellId).removeNote(value);
                 }
             }
         }
@@ -493,16 +411,16 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
             CellGroupFragment fragmentOnRow = (CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragments[fragmentNumber - 1]);
             for (int j = 0; j < 3; j++) {
                 int cellId = row * 3 + j;
-                if (fragmentOnRow.getCell(cellId).isNote()) {
-                    fragmentOnRow.getCell(cellId).removeNote(value);
-                }
+                if (fragmentOnRow != null)
+                    if (fragmentOnRow.getCell(cellId).isNote())
+                        fragmentOnRow.getCell(cellId).removeNote(value);
             }
             fragmentOnRow = (CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragments[fragmentNumber+1]);
             for (int j = 0; j < 3; j++) {
                 int cellId = row * 3 + j;
-                if (fragmentOnRow.getCell(cellId).isNote()) {
-                    fragmentOnRow.getCell(cellId).removeNote(value);
-                }
+                if (fragmentOnRow != null)
+                    if (fragmentOnRow.getCell(cellId).isNote())
+                        fragmentOnRow.getCell(cellId).removeNote(value);
             }
         }
         if ((fragmentNumber+1)%3 == 1) {
@@ -510,9 +428,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                 CellGroupFragment fragmentOnRow = (CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragments[fragmentNumber + (i+1)]);
                 for (int j = 0; j < 3; j++) {
                     int cellId = row * 3 + j;
-                    if (fragmentOnRow.getCell(cellId).isNote()) {
-                        fragmentOnRow.getCell(cellId).removeNote(value);
-                    }
+                    if (fragmentOnRow != null)
+                        if (fragmentOnRow.getCell(cellId).isNote())
+                            fragmentOnRow.getCell(cellId).removeNote(value);
                 }
             }
         }
@@ -526,25 +444,28 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                 CellGroupFragment frag = (CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragments[fragmentId]);
                 for (int j = 0; j < 3; j++) {
                     int cellId = 3 * j + column;
-                    if (frag.getCell(cellId).isNote())
-                        frag.getCell(cellId).removeNote(value);
+                    if (frag != null)
+                        if (frag.getCell(cellId).isNote())
+                            frag.getCell(cellId).removeNote(value);
                 }
             }
         }
         if (fragmentRow == 1) {
-            int fragmentId = 3*(fragmentRow - 1) + fragmentColumn;
+            int fragmentId = fragmentColumn;
             CellGroupFragment frag = (CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragments[fragmentId]);
             for (int j = 0; j < 3; j++) {
                 int cellId = 3 * j + column;
-                if (frag.getCell(cellId).isNote())
-                    frag.getCell(cellId).removeNote(value);
+                if (frag != null)
+                    if (frag.getCell(cellId).isNote())
+                        frag.getCell(cellId).removeNote(value);
             }
             fragmentId = 3*(fragmentRow + 1) + fragmentColumn;
             frag = (CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragments[fragmentId]);
             for (int j = 0; j < 3; j++) {
                 int cellId = 3 * j + column;
-                if (frag.getCell(cellId).isNote())
-                    frag.getCell(cellId).removeNote(value);
+                if (frag != null)
+                    if (frag.getCell(cellId).isNote())
+                        frag.getCell(cellId).removeNote(value);
             }
         }
         if (fragmentRow == 2) {
@@ -553,8 +474,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                 CellGroupFragment frag = (CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragments[fragmentId]);
                 for (int j = 0; j < 3; j++) {
                     int cellId = 3 * j + column;
-                    if (frag.getCell(cellId).isNote())
-                        frag.getCell(cellId).removeNote(value);
+                    if (frag != null)
+                        if (frag.getCell(cellId).isNote())
+                            frag.getCell(cellId).removeNote(value);
                 }
             }
         }
@@ -570,29 +492,29 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
     private void refreshCellColors() {
         if (previouslySelected != null)
-            previouslySelected.setBackground(getResources().getDrawable(R.drawable.table_border_cell));
+            previouslySelected.setBackground(ResourcesCompat.getDrawable(getApplicationContext().getResources(), R.drawable.table_border_cell, getApplicationContext().getTheme()));
 
         for (int i = 0; i < wrongCells.size(); i++) {
-            wrongCells.get(i).setBackground(getResources().getDrawable(R.drawable.table_border_cell_wrong));
+            wrongCells.get(i).setBackground(ResourcesCompat.getDrawable(getApplicationContext().getResources(), R.drawable.table_border_cell_wrong, getApplicationContext().getTheme()));
         }
 
         if (clickedCell != null) {
             if (wrongCells.contains(clickedCell))
-                clickedCell.setBackground(getResources().getDrawable(R.drawable.table_border_cell_wrong_selected));
+                clickedCell.setBackground(ResourcesCompat.getDrawable(getApplicationContext().getResources(), R.drawable.table_border_cell_wrong_selected, getApplicationContext().getTheme()));
             else
-                clickedCell.setBackground(getResources().getDrawable(R.drawable.table_border_cell_selected));
+                clickedCell.setBackground(ResourcesCompat.getDrawable(getApplicationContext().getResources(), R.drawable.table_border_cell_selected, getApplicationContext().getTheme()));
         }
     }
 
 
     private void startTimer() {
-        StartTime = SystemClock.uptimeMillis();
+        startTime = SystemClock.uptimeMillis();
         handler.postDelayed(runnable, 0);
     }
 
 
     private void stopTimer() {
-        TimeBuff += MillisecondTime;
+        timeBuff += millisecondTime;
         handler.removeCallbacks(runnable);
     }
 
@@ -607,18 +529,77 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     }
 
 
-    private Runnable runnable = new Runnable() {
+    public void gameWon() {
+        stopTimer();
+        int seconds = (int) (updateTime / 1000);
+
+        GameRecord record = new GameRecord(seconds, difficulty);
+        if (difficulty == 0)
+            stats.addExperience(5);
+        if (difficulty == 1)
+            stats.addExperience(10);
+        if (difficulty == 2)
+            stats.addExperience(15);
+        stats.addRecord(record);
+        stats.saveStats();
+
+        minutes = seconds / 60;
+        seconds = seconds % 60;
+
+        new AlertDialog.Builder(this)
+                .setTitle("Game won!")
+                .setMessage(String.format(getString(R.string.game_won_message), minutes, seconds))
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton("New game?", (dialog, whichButton) -> {
+                    Intent intent = new Intent();
+                    intent.putExtra("Lost", 0);
+                    setResult(1, intent);
+                    finish();
+                })
+                .setNegativeButton("Go Home?", (dialog, which) -> {
+                    Intent intent = new Intent();
+                    intent.putExtra("Lost", 1);
+                    setResult(2, intent);
+                    finish();
+                }).setCancelable(false).show();
+    }
+
+
+    private void gameLost() {
+        stopTimer();
+        GameRecord record = new GameRecord(-1, difficulty);
+        stats.addRecord(record);
+        stats.saveStats();
+        new AlertDialog.Builder(this)
+                .setTitle("Game Lost!")
+                .setMessage("Game Lost!")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton("New game?", (dialog, whichButton) -> {
+                    Intent intent = new Intent();
+                    intent.putExtra("Lost", 1);
+                    setResult(1, intent);
+                    finish();
+                })
+                .setNegativeButton("Go Home?", (dialog, which) -> {
+                    Intent intent = new Intent();
+                    intent.putExtra("Lost", 1);
+                    setResult(2, intent);
+                    finish();
+                }).setCancelable(false).show();
+    }
+
+
+    private final Runnable runnable = new Runnable() {
 
         public void run() {
-            MillisecondTime = SystemClock.uptimeMillis() - StartTime;
-            UpdateTime = TimeBuff + MillisecondTime;
+            millisecondTime = SystemClock.uptimeMillis() - startTime;
+            updateTime = timeBuff + millisecondTime;
 
-            Seconds = (int) (UpdateTime / 1000);
-            Minutes = Seconds / 60;
-            Seconds = Seconds % 60;
-            MilliSeconds = (int) (UpdateTime % 1000);
+            int seconds = (int) (updateTime / 1000);
+            minutes = seconds / 60;
+            seconds = seconds % 60;
 
-            timer.setText(String.format("%02d:%02d", Minutes, Seconds));
+            timer.setText(String.format(getString(R.string.timer), minutes, seconds));
             handler.postDelayed(this, 0);
         }
 
