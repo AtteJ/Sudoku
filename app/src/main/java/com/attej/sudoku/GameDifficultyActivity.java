@@ -42,8 +42,16 @@ public class GameDifficultyActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == 1)
+        if (resultCode == 1) {
             disableButtons(false);
+        }
+        if (resultCode == 2) {
+            disableButtons(false);
+            Intent intent = new Intent();
+            intent.putExtra("Lost", 1);
+            setResult(1, intent);
+            finish();
+        }
     }
 
 

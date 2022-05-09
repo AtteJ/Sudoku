@@ -1,10 +1,14 @@
 package com.attej.sudoku;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.attej.sudoku.backend.GameRecord;
 import com.attej.sudoku.backend.Stats;
@@ -18,7 +22,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
-public class StatsActivity extends Activity {
+public class StatsActivity extends AppCompatActivity {
     private Stats stats;
     private String FILENAME = "game_records.dat";
 
@@ -26,10 +30,19 @@ public class StatsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
+
         stats = new Stats(getApplicationContext());
-        // readData();
+
+        refreshStats();
+    }
+
+
+    private void refreshStats() {
         setBestTimes();
         setAverageTimes();
+        setWinPercentages();
+        setGamesWon();
+        setGamesPlayed();
     }
 
 
@@ -101,39 +114,55 @@ public class StatsActivity extends Activity {
     }
 
 
-    private void readData() {
-        File file = new File(FILENAME);
+    private void setWinPercentages() {
+        TextView easy = findViewById(R.id.easyWinPercent);
+        TextView normal = findViewById(R.id.normalWinPercent);
+        TextView hard = findViewById(R.id.hardWinPercent);
 
-        try {
-            FileInputStream fi = getApplicationContext().openFileInput(FILENAME);
-            InputStreamReader inStream = new InputStreamReader(fi, StandardCharsets.UTF_8);
-            BufferedReader br = new BufferedReader(inStream);
-            String line;
-            String[] record;
+        easy.setText("Win Percentage: " + stats.getWinPercentage(0) + "%");
+        normal.setText("Win Percentage: " + stats.getWinPercentage(1) + "%");
+        hard.setText("Win Percentage: " + stats.getWinPercentage(2) + "%");
+    }
 
-            while((line = br.readLine()) != null) {
-                System.out.println(line);
-                if (!line.equals("")) {
-                    record = line.split("|");
-                    try {
-                        int seconds = Integer.parseInt(record[0]);
-                        int difficulty = Integer.parseInt(record[1]);
-                        stats.addRecord(new GameRecord(seconds, difficulty));
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            br.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+    private void setGamesWon() {
+        TextView easy = findViewById(R.id.easyGamesWon);
+        TextView normal = findViewById(R.id.normalGamesWon);
+        TextView hard = findViewById(R.id.hardGamesWon);
+
+        easy.setText("Games Won: " + stats.getDifficultyWon(0));
+        normal.setText("Games Won: " + stats.getDifficultyWon(1));
+        hard.setText("Games Won: " + stats.getDifficultyWon(2));
+    }
+
+
+    private void setGamesPlayed() {
+        TextView easy = findViewById(R.id.easyGamesPlayed);
+        TextView normal = findViewById(R.id.normalGamesPlayed);
+        TextView hard = findViewById(R.id.hardGamesPlayed);
+
+        easy.setText("Games Played: " + stats.getDifficultyPlayed(0));
+        normal.setText("Games Played: " + stats.getDifficultyPlayed(1));
+        hard.setText("Games Played: " + stats.getDifficultyPlayed(2));
     }
 
 
     public void onGoBackButtonClicked(View view) {
         finish();
+    }
+
+
+    public void onClearStatsClicked(View view) {
+        new AlertDialog.Builder(this)
+                .setTitle("Are you sure?")
+                .setMessage("This is irreversible")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton("Clear stats", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        stats.clearStats();
+                        refreshStats();
+                    }})
+                .setNegativeButton(android.R.string.no, null).show();
     }
 }

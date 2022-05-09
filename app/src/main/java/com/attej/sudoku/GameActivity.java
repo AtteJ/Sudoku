@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -49,7 +50,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private int clickedCellId;
     private int difficulty = 1;
     private int givens = 0;
-    private int mistakes;
+    private int mistakes = 0;
+    private int hintsLeft = 1;
 
     private int[] cellGroupFragments;
 
@@ -61,6 +63,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
     private TextView timer;
     private TextView mistakesText;
+    private TextView hintsText;
 
     private long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L ;
     private Handler handler;
@@ -83,7 +86,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         setButtColors();
 
         mistakesText = findViewById(R.id.mistakesCounter);
-        updateMistakeCounter();
+        hintsText = findViewById(R.id.hintsCounter);
+        updateCounters();
 
         timer = findViewById(R.id.stopWatch);
         handler = new Handler() ;
@@ -158,8 +162,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     }
 
 
-    private void updateMistakeCounter() {
+    private void updateCounters() {
         mistakesText.setText("Mistakes: " + mistakes + "/3");
+        hintsText.setText("Hints Left: " + hintsLeft + "/1");
         if (mistakes >= 3)
             gameLost();
     }
@@ -171,18 +176,28 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
             return;
         }
 
-        int row = ((clickedGroup - 1) / 3) * 3 + (clickedCellId / 3);
-        int column = ((clickedGroup - 1) % 3) * 3 + ((clickedCellId) % 3);
+        int row = getSelectedRow();
+        int column = getSelectedColumn();
 
         int previousNumber = clickedCell.getNumber();
 
         clickedCell.setNumber(num, false);
         currentBoard.setValue(row, column, num);
 
+        updateNumberButtons();
+
+        checkAddedNumber(num, previousNumber);
+
+        removeMatchingNotes(num);
+        refreshCellColors();
+    }
+
+
+    private void checkAddedNumber(int num, int previousNumber) {
         if ((!checkNumber()) && num != 0 && !CheckSolution.checkGrid(currentBoard)) {
             if (num != previousNumber) {
                 mistakes++;
-                updateMistakeCounter();
+                updateCounters();
             }
             if (!wrongCells.contains(clickedCell))
                 wrongCells.add(clickedCell);
@@ -192,9 +207,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
         if (CheckSolution.checkGrid(currentBoard) && checkBoard())
             gameWon();
-
-        removeMatchingNotes(num);
-        refreshCellColors();
     }
 
 
@@ -234,6 +246,12 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         stopTimer();
         int seconds = (int) (UpdateTime / 1000);
         GameRecord record = new GameRecord(seconds, difficulty);
+        if (difficulty == 0)
+            stats.addExperience(5);
+        if (difficulty == 1)
+            stats.addExperience(10);
+        if (difficulty == 2)
+            stats.addExperience(15);
         stats.addRecord(record);
         stats.saveStats();
         new AlertDialog.Builder(this)
@@ -247,12 +265,24 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                         intent.putExtra("Lost", 0);
                         setResult(1, intent);
                         finish();
-                    }}).show();
+                    }})
+                .setNegativeButton("Go Home?", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent();
+                        intent.putExtra("Lost", 1);
+                        setResult(2, intent);
+                        finish();
+                    }
+                }).setCancelable(false).show();
     }
 
 
     private void gameLost() {
         stopTimer();
+        GameRecord record = new GameRecord(-1, difficulty);
+        stats.addRecord(record);
+        stats.saveStats();
         new AlertDialog.Builder(this)
                 .setTitle("Game Lost!")
                 .setMessage("Game Lost!")
@@ -264,7 +294,16 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                         intent.putExtra("Lost", 1);
                         setResult(1, intent);
                         finish();
-                    }}).setCancelable(false).show();
+                    }})
+                .setNegativeButton("Go Home?", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent();
+                        intent.putExtra("Lost", 1);
+                        setResult(2, intent);
+                        finish();
+                    }
+                }).setCancelable(false).show();
     }
 
 
@@ -285,6 +324,60 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         if (!isStartPiece(groupId, cellId)) {
            selectCell();
         }
+    }
+
+
+    private void updateNumberButtons() {
+        for (int i = 1; i < 10; i++) {
+            if (currentBoard.isNumberLeft(i) || note)
+                addNumberButton(i);
+            else
+                removeNumberButton(i);
+        }
+        setNumButtColors();
+    }
+
+
+    private void removeNumberButton(int num) {
+        Button[] numButts = getNumButts();
+
+        numButts[num - 1].setVisibility(View.INVISIBLE);
+        numButts[num - 1].setEnabled(false);
+    }
+
+
+    private void addNumberButton(int num) {
+        Button[] numButts = getNumButts();
+
+        numButts[num - 1].setVisibility(View.VISIBLE);
+        numButts[num - 1].setEnabled(true);
+    }
+
+
+    private void setNumButtColors() {
+        Button[] butts = getNumButts();
+        for (int i = 0; i < butts.length; i++) {
+            if (note)
+                butts[i].setBackgroundColor(getResources().getColor(R.color.note_selected));
+            else
+                butts[i].setBackgroundColor(getResources().getColor(R.color.purple_500));
+        }
+    }
+
+
+    public Button[] getNumButts() {
+        Button[] numButts = new Button[9];
+        numButts[0] = findViewById(R.id.butt1);
+        numButts[1] = findViewById(R.id.butt2);
+        numButts[2] = findViewById(R.id.butt3);
+        numButts[3] = findViewById(R.id.butt4);
+        numButts[4] = findViewById(R.id.butt5);
+        numButts[5] = findViewById(R.id.butt6);
+        numButts[6] = findViewById(R.id.butt7);
+        numButts[7] = findViewById(R.id.butt8);
+        numButts[8] = findViewById(R.id.butt9);
+
+        return numButts;
     }
 
 
@@ -311,6 +404,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     public void onNoteButtClicked(View view) {
         note = !note;
         Button butt = view.findViewById(R.id.buttNote);
+        updateNumberButtons();
         if (note)
             butt.setBackgroundColor(getResources().getColor(R.color.note_selected));
         else
@@ -318,14 +412,39 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     }
 
 
+    public void onHintButtonClicked(View view) {
+        if (clickedCell == null || clickedCell.getNumber() != 0)
+            Toast.makeText(getApplicationContext(), "First select unfilled cell", Toast.LENGTH_SHORT).show();
+        else if (hintsLeft > 0) {
+            clickedCell.setNumber(solution.getValue(getSelectedRow(), getSelectedColumn()), true);
+            currentBoard.setValue(getSelectedRow(), getSelectedColumn(), clickedCell.getNumber());
+            hintsLeft--;
+            updateNumberButtons();
+            removeMatchingNotes(clickedCell.getNumber());
+            refreshCellColors();
+            updateCounters();
+        }
+        else
+            Toast.makeText(getApplicationContext(), "No Hints Left", Toast.LENGTH_SHORT).show();
+    }
+
+
     public void onGoBackButtonClicked(View view) {
         new AlertDialog.Builder(this)
                 .setTitle("Quit")
-                .setMessage("Do you really want to quit?")
+                .setMessage("Do you really want to quit? This will be counted as a loss.")
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        GameRecord record = new GameRecord(-1, difficulty);
+                        stats.addRecord(record);
+                        stats.saveStats();
+
+                        Intent intent = new Intent();
+                        intent.putExtra("Lost", 1);
+                        setResult(1, intent);
+
                         finish();
                     }})
                 .setNegativeButton(android.R.string.no, null).show();
@@ -475,6 +594,16 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private void stopTimer() {
         TimeBuff += MillisecondTime;
         handler.removeCallbacks(runnable);
+    }
+
+
+    private int getSelectedRow() {
+        return ((clickedGroup - 1) / 3) * 3 + (clickedCellId / 3);
+    }
+
+
+    private int getSelectedColumn() {
+        return ((clickedGroup - 1) % 3) * 3 + ((clickedCellId) % 3);
     }
 
 

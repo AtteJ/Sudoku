@@ -8,7 +8,8 @@
     <string name="stats">Stats</string>
     <string name="go_back">Go Back</string>
 
-    <string name="best_times">Best Times</string>
+    <string name="best_times">Game Stats</string>
+    <string name="clear_stats">Clear Stats</string>
 
     <string name="choose_difficulty">Choose Difficulty</string>
     <string name="easy">Easy</string>
@@ -26,4 +27,5 @@
     <string name="butt9">9</string>
     <string name="butt_note">Note</string>
     <string name="butt_del"> Del </string>
+    <string name="butt_hint">Hint</string>
 </resources>

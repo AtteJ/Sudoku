@@ -17,6 +17,8 @@ public class Stats {
     private ArrayList<GameRecord> records = new ArrayList<GameRecord>();
     private String FILENAME = "game_stats.dat";
 
+    private int experience = 0;
+
     public Stats(Context context) {
         this.context = context;
         readStats();
@@ -31,10 +33,12 @@ public class Stats {
     public int getAverage(int difficulty) {
         int sum = 0;
         for (int i = 0; i < records.size(); i++) {
-            if (records.get(i).getDifficulty() == difficulty)
+            if (records.get(i).getDifficulty() == difficulty && records.get(i).getTimeSeconds() != -1)
                 sum += records.get(i).getTimeSeconds();
         }
-        return sum / records.size();
+        if (getDifficultyPlayed(difficulty) == 0)
+            return 0;
+        return sum / getDifficultyWon(difficulty);
     }
 
 
@@ -43,7 +47,7 @@ public class Stats {
             return 0;
         int best = Integer.MAX_VALUE;
         for (int i = 0; i < records.size(); i++) {
-            if (records.get(i).getDifficulty() == difficulty) {
+            if (records.get(i).getDifficulty() == difficulty && records.get(i).getTimeSeconds() != -1) {
                 if (records.get(i).getTimeSeconds() < best)
                     best = records.get(i).getTimeSeconds();
             }
@@ -55,21 +59,71 @@ public class Stats {
     }
 
 
-    public void saveStats() {
-        System.out.println("Writing to file");
+    public int getWinPercentage(int difficulty) {
+        int losses = 0;
         for (int i = 0; i < records.size(); i++) {
-            String data = records.get(i).getTimeSeconds() + "|" + records.get(i).getDifficulty();
-            File file = new File(context.getFilesDir(), FILENAME);
+            if (records.get(i).getDifficulty() == difficulty && records.get(i).getTimeSeconds() == -1)
+                losses++;
+        }
+        int played = getDifficultyPlayed(difficulty);
+        if (played > 0)
+            return (int)Math.round(((played - losses) / (double)played) * 100);
+        return 0;
+    }
 
-            try {
-                FileWriter writer = new FileWriter(file);
-                writer.write("");
+
+    public int getDifficultyWon(int difficulty) {
+        int sum = 0;
+        for (int i = 0; i < records.size(); i++) {
+            if (records.get(i).getDifficulty() == difficulty && records.get(i).getTimeSeconds() != -1)
+                sum++;
+        }
+        return sum;
+    }
+
+
+    public int getDifficultyPlayed(int difficulty) {
+        int sum = 0;
+        for (int i = 0; i < records.size(); i++) {
+            if (records.get(i).getDifficulty() == difficulty)
+                sum++;
+        }
+        return sum;
+    }
+
+
+    public void addExperience(int xp) {
+        experience += xp;
+    }
+
+
+    public int getExperience() {
+        return experience;
+    }
+
+
+    public void clearStats() {
+        records.clear();
+
+    }
+
+
+    public void saveStats() {
+        System.out.println("Writing to file " + context.getFilesDir() + "/" + FILENAME);
+        File file = new File(context.getFilesDir(), FILENAME);
+        try {
+            FileWriter writer = new FileWriter(file);
+            String data = experience + "";
+            writer.write(data + "\n");
+            for (int i = 0; i < records.size(); i++) {
+                data = records.get(i).getTimeSeconds() + "|" + records.get(i).getDifficulty();
+                System.out.println(data);
                 writer.append(data + "\n");
-                writer.flush();
-                writer.close();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -82,18 +136,28 @@ public class Stats {
             String line;
             String[] record;
 
+            System.out.println("Stats:");
+            System.out.println("Reading from: " + context.getFilesDir() + "/" + FILENAME);
+
             while((line = br.readLine()) != null) {
-                System.out.println("Stats:");
-                System.out.println("Reading from: " + fi.getFD());
                 System.out.println(line);
                 if (!line.equals("")) {
                     record = line.split("\\|");
-                    try {
-                        int seconds = Integer.parseInt(record[0]);
-                        int difficulty = Integer.parseInt(record[1]);
-                        addRecord(new GameRecord(seconds, difficulty));
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
+                    if (record.length == 1) {
+                        try {
+                            experience = Integer.parseInt(record[0]);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else {
+                        try {
+                            int seconds = Integer.parseInt(record[0]);
+                            int difficulty = Integer.parseInt(record[1]);
+                            addRecord(new GameRecord(seconds, difficulty));
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }

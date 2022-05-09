@@ -53,6 +53,12 @@ public class CellGroupFragment extends Fragment {
         this.groupId = groupId;
     }
 
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+
     public void setValue(int position, int value, boolean startingCell) {
         cells = new int[]{R.id.cell1, R.id.cell2, R.id.cell3, R.id.cell4,
                 R.id.cell5, R.id.cell6, R.id.cell7, R.id.cell8, R.id.cell9};

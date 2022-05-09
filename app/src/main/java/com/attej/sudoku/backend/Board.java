@@ -45,6 +45,20 @@ public class Board {
     }
 
 
+    public boolean isNumberLeft(int number) {
+        int sum = 0;
+        for (int i = 0; i < gameCells.length; i++) {
+            for (int j = 0; j < gameCells[i].length; j++) {
+                if (gameCells[i][j] == number)
+                    sum++;
+            }
+        }
+        if (sum < 9)
+            return true;
+        return false;
+    }
+
+
     @Override
     public String toString() {
         StringBuilder temp = new StringBuilder();

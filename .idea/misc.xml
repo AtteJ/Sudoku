@@ -16,6 +16,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_stats.xml" value="0.24010416666666667" />
         <entry key="app/src/main/res/layout/attrs.xml" value="0.16041666666666668" />
+        <entry key="app/src/main/res/layout/experience_bar.xml" value="0.19270833333333334" />
         <entry key="app/src/main/res/layout/fragment_cell.xml" value="0.16041666666666668" />
         <entry key="app/src/main/res/layout/fragment_cell_group.xml" value="0.19322916666666667" />
         <entry key="app/src/main/res/layout/fragment_cell_hints.xml" value="0.23541666666666666" />
