@@ -23,6 +23,7 @@ import com.attej.sudoku.backend.CheckSolution;
 import com.attej.sudoku.backend.GameRecord;
 import com.attej.sudoku.backend.GenerateSudoku;
 import com.attej.sudoku.backend.Stats;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
@@ -57,11 +58,16 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
     private Stats stats;
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         stats = new Stats(getApplicationContext());
 
@@ -74,6 +80,11 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         mistakesText = findViewById(R.id.mistakesCounter);
         hintsText = findViewById(R.id.hintsCounter);
         updateCounters();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(difficulty));
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "new game");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
         timer = findViewById(R.id.stopWatch);
         handler = new Handler() ;

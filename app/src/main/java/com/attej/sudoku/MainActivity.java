@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.attej.sudoku.backend.ExperienceBar;
 import com.attej.sudoku.backend.Stats;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import android.content.Intent;
 import android.view.View;
@@ -16,12 +17,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
     private int experience = 0;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         refreshStats();
     }

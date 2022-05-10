@@ -8,15 +8,20 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.attej.sudoku.backend.Stats;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 
 public class StatsActivity extends AppCompatActivity {
     private Stats stats;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         stats = new Stats(getApplicationContext());
 

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "833068304386",
+    "project_id": "sudoku-478e8",
+    "storage_bucket": "sudoku-478e8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:833068304386:android:dc48f2e1f2bddb6891ff1b",
+        "android_client_info": {
+          "package_name": "com.attej.sudoku"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "833068304386-ktjj6hpk064c3kn38huquvrftk4gof4s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApDc8vYVcIO4FO_F684ASw6npebIC-W1Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "833068304386-ktjj6hpk064c3kn38huquvrftk4gof4s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
