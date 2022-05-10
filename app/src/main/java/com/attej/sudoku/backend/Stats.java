@@ -35,7 +35,7 @@ public class Stats {
             if (records.get(i).getDifficulty() == difficulty && records.get(i).getTimeSeconds() != -1)
                 sum += records.get(i).getTimeSeconds();
         }
-        if (getDifficultyPlayed(difficulty) == 0)
+        if (getDifficultyWon(difficulty) == 0)
             return 0;
         return sum / getDifficultyWon(difficulty);
     }
