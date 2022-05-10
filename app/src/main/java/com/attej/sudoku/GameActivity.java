@@ -81,8 +81,10 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         hintsText = findViewById(R.id.hintsCounter);
         updateCounters();
 
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(difficulty));
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "new game");
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "new game");
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
@@ -554,12 +556,16 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         stats.addRecord(record);
         stats.saveStats();
 
+
         minutes = seconds / 60;
         seconds = seconds % 60;
+        String message = String.format(getString(R.string.game_won_message), minutes, seconds);
+        if (stats.getBestTime(difficulty) > (int) (updateTime / 1000) || stats.getBestTime(difficulty) == 0)
+            message += " New Best Time!";
 
         new AlertDialog.Builder(this)
                 .setTitle("Game won!")
-                .setMessage(String.format(getString(R.string.game_won_message), minutes, seconds))
+                .setMessage(message)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton("New game?", (dialog, whichButton) -> {
                     Intent intent = new Intent();
