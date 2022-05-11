@@ -4,18 +4,10 @@ import static com.attej.sudoku.backend.CheckSolution.checkGrid;
 import static com.attej.sudoku.backend.CheckSolution.checkSolution;
 import static com.attej.sudoku.backend.CheckSolution.isValid;
 
-import android.app.Activity;
-import android.app.Service;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.IBinder;
-
-import androidx.annotation.Nullable;
-
 import java.util.Random;
 
 public class GenerateSudoku implements Runnable {
-    private int givens = 0;
+    private final int givens;
     private int[][] grid;
     public GenerateSudoku(int givens) {
         this.givens = givens;
@@ -153,9 +145,7 @@ public class GenerateSudoku implements Runnable {
     public static int[][] copyGrid(int[][] grid) {
         int[][] copy = new int[9][9];
         for (int i = 0; i < 9; i++) {
-            for (int j =0; j < 9; j++) {
-                copy[i][j] = grid[i][j];
-            }
+            System.arraycopy(grid[i], 0, copy[i], 0, 9);
         }
         return copy;
     }

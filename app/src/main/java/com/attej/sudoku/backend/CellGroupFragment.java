@@ -1,17 +1,14 @@
 package com.attej.sudoku.backend;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import java.util.ArrayList;
 import com.attej.sudoku.R;
 
 public class CellGroupFragment extends Fragment {
@@ -27,10 +24,6 @@ public class CellGroupFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            //mParam1 = getArguments().getString(ARG_PARAM1);
-            //mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -52,11 +45,6 @@ public class CellGroupFragment extends Fragment {
 
     public void setGroupId(int groupId) {
         this.groupId = groupId;
-    }
-
-
-    public int getGroupId() {
-        return groupId;
     }
 
 
@@ -83,28 +71,13 @@ public class CellGroupFragment extends Fragment {
     }
 
 
-    public boolean checkGroupCorrect() {
-        ArrayList<Integer> numbers = new ArrayList<>();
-        for (int cell : cells) {
-            TextView textView = view.findViewById(cell);
-            int number = Integer.parseInt(textView.getText().toString());
-            if (numbers.contains(number)) {
-                return false;
-            } else {
-                numbers.add(number);
-            }
-        }
-        return true;
-    }
-
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+            throw new RuntimeException(context + " must implement OnFragmentInteractionListener");
         }
     }
 

@@ -60,8 +60,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
     private Stats stats;
 
-    private FirebaseAnalytics mFirebaseAnalytics;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +67,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         setContentView(R.layout.activity_game);
 
         // Obtain the FirebaseAnalytics instance.
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         stats = new Stats(getApplicationContext());
 

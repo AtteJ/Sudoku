@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
     private int experience = 0;
-    private FirebaseAnalytics mFirebaseAnalytics;
 
 
     @Override
@@ -26,7 +25,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Obtain the FirebaseAnalytics instance.
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "Game opened");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Main");
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "main");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
         refreshStats();
     }
@@ -56,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    ActivityResultLauncher<Intent> NewGameActivityResultLauncher = registerForActivityResult(
+    final ActivityResultLauncher<Intent> NewGameActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
