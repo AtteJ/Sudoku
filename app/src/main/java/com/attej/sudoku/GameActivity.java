@@ -1,6 +1,5 @@
 package com.attej.sudoku;
 
-import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -39,6 +38,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private int difficulty = 1;
     private int mistakes = 0;
     private int hintsLeft = 1;
+
+    private static final String TAG = "cell";
+
 
     private int[] cellGroupFragments;
 
