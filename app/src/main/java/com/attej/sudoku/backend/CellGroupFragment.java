@@ -65,15 +65,15 @@ public class CellGroupFragment extends Fragment {
                 R.id.cell5, R.id.cell6, R.id.cell7, R.id.cell8, R.id.cell9};
         Cell currentCell = view.findViewById(cells[position]);
         currentCell.setNumber(value, startingCell);
-        setContentDescriptions();
+        refreshContentDescriptions();
     }
 
 
-    private void setContentDescriptions() {
+    private void refreshContentDescriptions() {
         Cell cell;
         for (int i = 0; i < 9; i++) {
             cell = view.findViewById(cells[i]);
-            cell.setContentDescription(String.format(getString(R.string.cell_description), groupId, i));
+            cell.setContentDescription(String.format(getString(R.string.cell_description), groupId, i, cell.getNumber()));
         }
     }
 
