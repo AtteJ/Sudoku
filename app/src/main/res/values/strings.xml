@@ -44,4 +44,6 @@
     <string name="butt_note">Note</string>
     <string name="butt_del"> Del </string>
     <string name="butt_hint">Hint</string>
+
+    <string name="cell_description">Subgrid %1$d, cell %2$d</string>
 </resources>

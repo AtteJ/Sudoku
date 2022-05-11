@@ -45,6 +45,7 @@ public class CellGroupFragment extends Fragment {
         for (int cell1 : cells) {
             Cell cell = view.findViewById(cell1);
             cell.setOnClickListener(view -> mListener.onFragmentInteraction(groupId, Integer.parseInt(view.getTag().toString()), view));
+
         }
         return view;
     }
@@ -64,6 +65,16 @@ public class CellGroupFragment extends Fragment {
                 R.id.cell5, R.id.cell6, R.id.cell7, R.id.cell8, R.id.cell9};
         Cell currentCell = view.findViewById(cells[position]);
         currentCell.setNumber(value, startingCell);
+        setContentDescriptions();
+    }
+
+
+    private void setContentDescriptions() {
+        Cell cell;
+        for (int i = 0; i < 9; i++) {
+            cell = view.findViewById(cells[i]);
+            cell.setContentDescription(String.format(getString(R.string.cell_description), groupId, i));
+        }
     }
 
 
