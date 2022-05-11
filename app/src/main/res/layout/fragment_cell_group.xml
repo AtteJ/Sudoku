@@ -1,14 +1,15 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/table_border_group"
-    android:stretchColumns="false"
+    android:stretchColumns="*"
     tools:context="com.attej.sudoku.backend.CellGroupFragment">
 
     <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/row1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textAlignment="center" >
 
@@ -16,8 +17,8 @@
             android:id="@+id/cell1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:minWidth="30dp"
-            android:minHeight="30dp"
+            android:minWidth="@dimen/cell_min_width"
+            android:minHeight="@dimen/cell_min_height"
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
@@ -31,8 +32,8 @@
             android:id="@+id/cell2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:minWidth="30dp"
-            android:minHeight="30dp"
+            android:minWidth="@dimen/cell_min_width"
+            android:minHeight="@dimen/cell_min_height"
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
@@ -45,20 +46,21 @@
             android:id="@+id/cell3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:minWidth="30dp"
-            android:minHeight="30dp"
+            android:minWidth="@dimen/cell_min_width"
+            android:minHeight="@dimen/cell_min_height"
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
             android:layout_marginTop="2dp"
             android:background="@drawable/table_border_cell"
             android:tag="2"
-            android:layout_marginEnd="1dp" />
+            android:layout_marginEnd="2dp" />
     </TableRow>
 
     <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/row2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textAlignment="center" >
 
@@ -66,8 +68,8 @@
             android:id="@+id/cell4"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:minWidth="30dp"
-            android:minHeight="30dp"
+            android:minWidth="@dimen/cell_min_width"
+            android:minHeight="@dimen/cell_min_height"
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
@@ -80,8 +82,8 @@
             android:id="@+id/cell5"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:minWidth="30dp"
-            android:minHeight="30dp"
+            android:minWidth="@dimen/cell_min_width"
+            android:minHeight="@dimen/cell_min_height"
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
@@ -93,20 +95,21 @@
             android:id="@+id/cell6"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:minWidth="30dp"
-            android:minHeight="30dp"
+            android:minWidth="@dimen/cell_min_width"
+            android:minHeight="@dimen/cell_min_height"
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
             android:background="@drawable/table_border_cell"
             android:tag="5"
-            android:layout_marginEnd="1dp"
+            android:layout_marginEnd="2dp"
             />
     </TableRow>
 
     <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/row3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textAlignment="center" >
 
@@ -114,8 +117,8 @@
             android:id="@+id/cell7"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:minWidth="30dp"
-            android:minHeight="30dp"
+            android:minWidth="@dimen/cell_min_width"
+            android:minHeight="@dimen/cell_min_height"
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
@@ -129,8 +132,8 @@
             android:id="@+id/cell8"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:minWidth="30dp"
-            android:minHeight="30dp"
+            android:minWidth="@dimen/cell_min_width"
+            android:minHeight="@dimen/cell_min_height"
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
@@ -143,15 +146,15 @@
             android:id="@+id/cell9"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:minWidth="30dp"
-            android:minHeight="30dp"
+            android:minWidth="@dimen/cell_min_width"
+            android:minHeight="@dimen/cell_min_height"
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
             android:layout_marginBottom="2dp"
             android:background="@drawable/table_border_cell"
             android:tag="8"
-            android:layout_marginEnd="1dp"
+            android:layout_marginEnd="2dp"
             />
     </TableRow>
 

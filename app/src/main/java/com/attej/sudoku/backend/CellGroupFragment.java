@@ -1,10 +1,14 @@
 package com.attej.sudoku.backend;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableRow;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -38,7 +42,6 @@ public class CellGroupFragment extends Fragment {
         for (int cell1 : cells) {
             Cell cell = view.findViewById(cell1);
             cell.setOnClickListener(view -> mListener.onFragmentInteraction(groupId, Integer.parseInt(view.getTag().toString()), view));
-
         }
         return view;
     }
@@ -57,11 +60,33 @@ public class CellGroupFragment extends Fragment {
     }
 
 
+    public void setCellSize() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager()
+                .getDefaultDisplay()
+                .getMetrics(displayMetrics);
+
+        TableRow tableRow = view.findViewById(R.id.row1);
+        tableRow.setMinimumWidth(displayMetrics.widthPixels / 15);
+        tableRow.setMinimumHeight(displayMetrics.widthPixels / 15);
+
+        tableRow = view.findViewById(R.id.row2);
+        tableRow.setMinimumWidth(displayMetrics.widthPixels / 15);
+        tableRow.setMinimumHeight(displayMetrics.widthPixels / 15);
+
+        tableRow = view.findViewById(R.id.row3);
+        tableRow.setMinimumWidth(displayMetrics.widthPixels / 15);
+        tableRow.setMinimumHeight(displayMetrics.widthPixels / 15);
+    }
+
+
     private void refreshContentDescriptions() {
         Cell cell;
         for (int i = 0; i < 9; i++) {
             cell = view.findViewById(cells[i]);
-            cell.setContentDescription(String.format(getString(R.string.cell_description), groupId, i, cell.getNumber()));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.DONUT) {
+                cell.setContentDescription(String.format(getString(R.string.cell_description), groupId, i, cell.getNumber()));
+            }
         }
     }
 

@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.attej.sudoku.R;
@@ -31,6 +32,7 @@ public class Cell extends TableLayout {
         String service = Context.LAYOUT_INFLATER_SERVICE;
         LayoutInflater li = (LayoutInflater) getContext().getSystemService(service);
         layout = (TableLayout) li.inflate(R.layout.fragment_cell, this, true);
+
 
         number = layout.findViewById(R.id.fragment_cell_main);
         invalidate();

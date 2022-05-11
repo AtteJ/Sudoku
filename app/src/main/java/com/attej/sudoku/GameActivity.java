@@ -76,6 +76,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         createSudoku(difficulty);
         addGivens();
         setButtColors();
+        refreshCellSizes();
 
         mistakesText = findViewById(R.id.mistakesCounter);
         hintsText = findViewById(R.id.hintsCounter);
@@ -112,6 +113,13 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
             CellGroupFragment thisCellGroupFragment = (CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragments[i-1]);
             if (thisCellGroupFragment != null)
                 thisCellGroupFragment.setGroupId(i);
+        }
+    }
+
+
+    private void refreshCellSizes() {
+        for (int i = 0; i < cellGroupFragments.length; i++) {
+            ((CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragments[i])).setCellSize();
         }
     }
 

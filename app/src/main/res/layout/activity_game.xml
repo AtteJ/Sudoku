@@ -8,11 +8,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="13dp"
         android:padding="10dp"
-        android:minHeight="0dp"
-        android:minWidth="0dp"
-        android:maxHeight="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -22,107 +18,113 @@
             android:id="@+id/mistakesCounter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="1" />
         <TextView
             android:id="@+id/hintsCounter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="15dp"/>
+            android:gravity="center"
+            android:layout_weight="1" />
     </LinearLayout>
 
 
     <TableLayout
-        android:layout_width="337dp"
-        android:layout_height="337dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/game_grid_horizontal_margin"
+        android:layout_marginEnd="@dimen/game_grid_horizontal_margin"
+        android:stretchColumns="*"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.15"
-        android:layout_marginStart="13dp">
+        app:layout_constraintVertical_bias="0.125"
+        >
         <TableRow
             android:layout_width="match_parent"
             android:id="@+id/tableRow1"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <fragment
                 android:id="@+id/cellGroupFragment"
                 android:name="com.attej.sudoku.backend.CellGroupFragment"
-                android:layout_width="92dp"
-                android:layout_height="106dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:tag="0"
                 android:layout_weight="1" />
 
             <fragment
                 android:id="@+id/cellGroupFragment2"
                 android:name="com.attej.sudoku.backend.CellGroupFragment"
-                android:layout_width="92dp"
-                android:layout_height="106dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:tag="1"
                 android:layout_weight="1" />
 
             <fragment
                 android:id="@+id/cellGroupFragment3"
                 android:name="com.attej.sudoku.backend.CellGroupFragment"
-                android:layout_width="92dp"
-                android:layout_height="106dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:tag="2"
                 android:layout_weight="1" />
 
         </TableRow>
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <fragment
                 android:id="@+id/cellGroupFragment4"
                 android:name="com.attej.sudoku.backend.CellGroupFragment"
-                android:layout_width="92dp"
-                android:layout_height="106dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:tag="3"
                 android:layout_weight="1" />
 
             <fragment
                 android:id="@+id/cellGroupFragment5"
                 android:name="com.attej.sudoku.backend.CellGroupFragment"
-                android:layout_width="92dp"
-                android:layout_height="106dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:tag="4"
                 android:layout_weight="1" />
 
             <fragment
                 android:id="@+id/cellGroupFragment6"
                 android:name="com.attej.sudoku.backend.CellGroupFragment"
-                android:layout_width="92dp"
-                android:layout_height="106dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:tag="5"
                 android:layout_weight="1" />
         </TableRow>
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="117dp">
+            android:layout_height="wrap_content">
 
             <fragment
                 android:id="@+id/cellGroupFragment7"
                 android:name="com.attej.sudoku.backend.CellGroupFragment"
-                android:layout_width="92dp"
-                android:layout_height="106dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:tag="6"
                 android:layout_weight="1" />
 
             <fragment
                 android:id="@+id/cellGroupFragment8"
                 android:name="com.attej.sudoku.backend.CellGroupFragment"
-                android:layout_width="92dp"
-                android:layout_height="106dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:tag="7"
                 android:layout_weight="1" />
 
             <fragment
                 android:id="@+id/cellGroupFragment9"
                 android:name="com.attej.sudoku.backend.CellGroupFragment"
-                android:layout_width="92dp"
-                android:layout_height="106dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:tag="8"
                 android:layout_weight="1" />
         </TableRow>
@@ -141,7 +143,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.64"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/game_activity_horizontal_margin"
         >
         <Button
             android:layout_width="wrap_content"
@@ -188,7 +190,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.72"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/game_activity_horizontal_margin"
         >
         <Button
             android:layout_width="wrap_content"
@@ -253,7 +255,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.8"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/game_activity_horizontal_margin"
         >
         <Button
             android:layout_width="wrap_content"
@@ -310,7 +312,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.86"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/game_activity_horizontal_margin"
         >
     <TextView
         android:layout_width="wrap_content"
@@ -336,7 +338,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.965"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/game_activity_horizontal_margin"
         >
         <Button
             android:id="@+id/button"
