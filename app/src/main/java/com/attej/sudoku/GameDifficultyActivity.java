@@ -6,13 +6,18 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 public class GameDifficultyActivity extends AppCompatActivity {
+
+    private FirebaseAnalytics mFireBaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_difficulty);
         disableButtons(false);
+        mFireBaseAnalytics = FirebaseAnalytics.getInstance(this);
    }
 
 

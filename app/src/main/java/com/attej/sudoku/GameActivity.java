@@ -23,6 +23,7 @@ import com.attej.sudoku.backend.CheckSolution;
 import com.attej.sudoku.backend.GameRecord;
 import com.attej.sudoku.backend.GenerateSudoku;
 import com.attej.sudoku.backend.Stats;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
@@ -32,6 +33,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private Cell previouslySelected;
 
     private final ArrayList<Cell> wrongCells = new ArrayList<>();
+
+    private FirebaseAnalytics mFireBaseAnalytics;
 
     private int clickedGroup;
     private int clickedCellId;
@@ -70,6 +73,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         createSudoku(difficulty);
         addGivens();
         setButtColors();
+
+        mFireBaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         mistakesText = findViewById(R.id.mistakesCounter);
         hintsText = findViewById(R.id.hintsCounter);
@@ -533,7 +538,13 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         stopTimer();
         int seconds = (int) (updateTime / 1000);
 
-        GameRecord record = new GameRecord(seconds, difficulty);
+        minutes = seconds / 60;
+        seconds = seconds % 60;
+        String message = String.format(getString(R.string.game_won_message), minutes, seconds);
+        if (stats.getBestTime(difficulty) > (int) (updateTime / 1000) && stats.getBestTime(difficulty) != 0)
+            message += "New Best Time!";
+
+        GameRecord record = new GameRecord((int)(updateTime / 1000), difficulty);
         if (difficulty == 0)
             stats.addExperience(5);
         if (difficulty == 1)
@@ -543,12 +554,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         stats.addRecord(record);
         stats.saveStats();
 
-        minutes = seconds / 60;
-        seconds = seconds % 60;
-
         new AlertDialog.Builder(this)
                 .setTitle("Game won!")
-                .setMessage(String.format(getString(R.string.game_won_message), minutes, seconds))
+                .setMessage(message)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton("New game?", (dialog, whichButton) -> {
                     Intent intent = new Intent();
