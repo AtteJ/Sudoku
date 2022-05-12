@@ -1,12 +1,15 @@
 package com.attej.sudoku.backend;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -61,6 +64,22 @@ public class CellGroupFragment extends Fragment {
     public void setGroupId(int groupId) {
         this.groupId = groupId;
         setContentDescriptors();
+    }
+
+
+    public void setRowHeight() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+
+        TableRow row = view.findViewById(R.id.row1);
+        row.setMinimumHeight(width / 15);
+
+        row = view.findViewById(R.id.row2);
+        row.setMinimumHeight(width / 15);
+
+        row = view.findViewById(R.id.row3);
+        row.setMinimumHeight(width / 15);
     }
 
 

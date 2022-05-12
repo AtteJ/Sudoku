@@ -8,8 +8,9 @@
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:id="@+id/row1"
         android:textAlignment="center" >
 
         <com.attej.sudoku.backend.Cell
@@ -17,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:minWidth="30dp"
-            android:minHeight="30dp"
+            android:minHeight="@dimen/cell_min_height"
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
@@ -32,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:minWidth="30dp"
-            android:minHeight="30dp"
+            android:minHeight="@dimen/cell_min_height"
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
@@ -46,20 +47,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:minWidth="30dp"
-            android:minHeight="30dp"
+            android:minHeight="@dimen/cell_min_height"
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
             android:layout_marginTop="2dp"
             android:background="@drawable/table_border_cell"
             android:tag="2"
-            android:layout_marginEnd="1dp" />
+            android:layout_marginEnd="2dp" />
     </TableRow>
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:id="@+id/row2"
         android:textAlignment="center" >
 
         <com.attej.sudoku.backend.Cell
@@ -67,7 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:minWidth="30dp"
-            android:minHeight="30dp"
+            android:minHeight="@dimen/cell_min_height"
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
@@ -81,7 +83,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:minWidth="30dp"
-            android:minHeight="30dp"
+            android:minHeight="@dimen/cell_min_height"
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
@@ -94,20 +96,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:minWidth="30dp"
-            android:minHeight="30dp"
+            android:minHeight="@dimen/cell_min_height"
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
             android:background="@drawable/table_border_cell"
             android:tag="5"
-            android:layout_marginEnd="1dp"
+            android:layout_marginEnd="2dp"
             />
     </TableRow>
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:id="@+id/row3"
         android:textAlignment="center" >
 
         <com.attej.sudoku.backend.Cell
@@ -115,7 +118,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:minWidth="30dp"
-            android:minHeight="30dp"
+            android:minHeight="@dimen/cell_min_height"
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
@@ -130,7 +133,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:minWidth="30dp"
-            android:minHeight="30dp"
+            android:minHeight="@dimen/cell_min_height"
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
@@ -144,14 +147,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:minWidth="30dp"
-            android:minHeight="30dp"
+            android:minHeight="@dimen/cell_min_height"
             android:layout_weight="1"
             android:gravity="center"
             android:textAlignment="center"
             android:layout_marginBottom="2dp"
             android:background="@drawable/table_border_cell"
             android:tag="8"
-            android:layout_marginEnd="1dp"
+            android:layout_marginEnd="2dp"
             />
     </TableRow>
 

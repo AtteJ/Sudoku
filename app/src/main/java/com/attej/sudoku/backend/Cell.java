@@ -107,6 +107,11 @@ public class Cell extends TableLayout {
     }
 
 
+    public void setCellSize() {
+        setMinimumHeight(getWidth()*2);
+    }
+
+
     public void removeNote(int value) {
         notes[value-1].setText("");
     }

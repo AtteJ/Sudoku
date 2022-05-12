@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +75,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         createSudoku(difficulty);
         addGivens();
         setButtColors();
+        setRowHeight();
 
         mFireBaseAnalytics = FirebaseAnalytics.getInstance(this);
 
@@ -155,6 +158,13 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private void setButtColors() {
         findViewById(R.id.del).setBackgroundColor(getResources().getColor(R.color.del));
         findViewById(R.id.buttNote).setBackgroundColor(getResources().getColor(R.color.note));
+    }
+
+
+    private void setRowHeight() {
+        for (int i = 0; i < cellGroupFragments.length; i++) {
+            ((CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragments[i])).setRowHeight();
+        }
     }
 
 
