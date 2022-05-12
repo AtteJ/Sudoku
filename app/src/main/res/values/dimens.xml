@@ -4,4 +4,6 @@
     <dimen name="game_grid_horizontal_margin">13dp</dimen>
     <dimen name="cell_min_width">30dp</dimen>
     <dimen name="cell_min_height">35dp</dimen>
+    <dimen name="button_padding">0dp</dimen>
+    <dimen name="button_margin">15dp</dimen>
 </resources>
