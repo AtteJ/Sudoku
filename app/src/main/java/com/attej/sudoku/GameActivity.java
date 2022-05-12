@@ -1,6 +1,5 @@
 package com.attej.sudoku;
 
-import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -44,6 +43,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private int mistakes = 0;
     private int hintsLeft = 1;
 
+    private static final String TAG = "cell";
+
+
     private int[] cellGroupFragments;
 
     private Board startBoard;
@@ -68,6 +70,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        // Obtain the FirebaseAnalytics instance.
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
         stats = new Stats(getApplicationContext());
 
         difficulty = getIntent().getIntExtra("difficulty", 0);
@@ -75,13 +80,18 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         createSudoku(difficulty);
         addGivens();
         setButtColors();
-        setRowHeight();
-
-        mFireBaseAnalytics = FirebaseAnalytics.getInstance(this);
+        refreshCellSizes();
 
         mistakesText = findViewById(R.id.mistakesCounter);
         hintsText = findViewById(R.id.hintsCounter);
         updateCounters();
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(difficulty));
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "new game");
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "new game");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
         timer = findViewById(R.id.stopWatch);
         handler = new Handler() ;
@@ -111,7 +121,11 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     }
 
 
-
+    private void refreshCellSizes() {
+        for (int i = 0; i < cellGroupFragments.length; i++) {
+            ((CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragments[i])).setCellSize();
+        }
+    }
 
 
     private void addGivens() {
@@ -554,7 +568,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         minutes = seconds / 60;
         seconds = seconds % 60;
         String message = String.format(getString(R.string.game_won_message), minutes, seconds);
-        if (stats.getBestTime(difficulty) > (int) (updateTime / 1000) && stats.getBestTime(difficulty) != 0)
+        if (stats.getBestTime(difficulty) > (int) (updateTime / 1000) || stats.getBestTime(difficulty) != 0)
             message += "New Best Time!";
 
         GameRecord record = new GameRecord((int)(updateTime / 1000), difficulty);

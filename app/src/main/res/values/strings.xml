@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Sudoku</string>
+    <string name="app_name">Sudoku Supreme</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
@@ -44,4 +44,6 @@
     <string name="butt_note">Note</string>
     <string name="butt_del"> Del </string>
     <string name="butt_hint">Hint</string>
+
+    <string name="cell_description">Subgrid %1$d, cell %2$d, filled number: %3$d</string>
 </resources>

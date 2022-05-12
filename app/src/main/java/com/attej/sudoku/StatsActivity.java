@@ -20,7 +20,9 @@ public class StatsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
 
-        mFireBaseAnalytics = FirebaseAnalytics.getInstance(this);
+        // Obtain the FirebaseAnalytics instance.
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
         stats = new Stats(getApplicationContext());
 
         refreshStats();

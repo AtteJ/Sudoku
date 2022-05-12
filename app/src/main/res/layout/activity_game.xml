@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -9,7 +8,6 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -22,30 +20,31 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
         <TextView
             android:id="@+id/hintsCounter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
     </LinearLayout>
-
 
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/game_grid_horizontal_margin"
+        android:layout_marginEnd="@dimen/game_grid_horizontal_margin"
+        android:stretchColumns="*"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.15"
-        android:layout_marginStart="13dp"
-        android:layout_marginEnd="13dp">
+        app:layout_constraintVertical_bias="0.125"
+        >
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:id="@+id/tableRow1"
+            android:layout_height="wrap_content">
 
             <fragment
                 android:id="@+id/cellGroupFragment"
@@ -74,8 +73,7 @@
         </TableRow>
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
             <fragment
                 android:id="@+id/cellGroupFragment4"
@@ -103,8 +101,7 @@
         </TableRow>
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
             <fragment
                 android:id="@+id/cellGroupFragment7"
@@ -135,28 +132,25 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.785">
+        app:layout_constraintVertical_bias="0.765"
+        android:layout_marginStart="@dimen/game_grid_horizontal_margin"
+        android:layout_marginEnd="@dimen/game_grid_horizontal_margin">
         <TableRow
             android:id="@+id/numButtonsTop"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
+            android:padding="@dimen/button_padding"
             android:maxHeight="15sp"
-            android:layout_marginStart="16dp"
             >
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:padding="10dp"
+                android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="48dp"
-                android:minHeight="48dp"
                 android:text="@string/butt1"
                 android:id="@+id/butt1"
                 android:tag="1"
@@ -164,10 +158,8 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:padding="10dp"
+                android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="48dp"
-                android:minHeight="48dp"
                 android:text="@string/butt2"
                 android:id="@+id/butt2"
                 android:tag="2"
@@ -175,10 +167,8 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:padding="10dp"
+                android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="48dp"
-                android:minHeight="48dp"
                 android:text="@string/butt3"
                 android:id="@+id/butt3"
                 android:tag="3"
@@ -190,18 +180,14 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
             android:maxHeight="15sp"
-            android:layout_marginStart="16dp"
+            android:padding="@dimen/button_padding"
             >
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:padding="10dp"
+                android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="48dp"
-                android:minHeight="48dp"
                 android:text="@string/butt4"
                 android:id="@+id/butt4"
                 android:tag="4"
@@ -209,10 +195,8 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:padding="10dp"
+                android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="48dp"
-                android:minHeight="48dp"
                 android:text="@string/butt5"
                 android:id="@+id/butt5"
                 android:tag="5"
@@ -220,10 +204,8 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:padding="10dp"
+                android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="48dp"
-                android:minHeight="48dp"
                 android:text="@string/butt6"
                 android:id="@+id/butt6"
                 android:tag="6"
@@ -231,9 +213,8 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:padding="10dp"
-                android:minWidth="0dp"
+                android:layout_marginStart="5dp"
+                android:minWidth="48dp"
                 android:text="@string/butt_note"
                 android:id="@+id/buttNote"
                 android:onClick="onNoteButtClicked"/>
@@ -241,8 +222,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
-                android:padding="10dp"
-                android:minWidth="0dp"
+                android:padding="@dimen/button_padding"
+                android:minWidth="48dp"
                 android:text="@string/butt_del"
                 android:id="@+id/del"
                 android:onClick="onDelButtClicked"/>
@@ -253,18 +234,14 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
+            android:padding="@dimen/button_padding"
             android:maxHeight="15sp"
-            android:layout_marginStart="16dp"
             >
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:padding="10dp"
+                android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="48dp"
-                android:minHeight="48dp"
                 android:text="@string/butt7"
                 android:id="@+id/butt7"
                 android:tag="7"
@@ -272,10 +249,8 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:padding="10dp"
+                android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="48dp"
-                android:minHeight="48dp"
                 android:text="@string/butt8"
                 android:id="@+id/butt8"
                 android:tag="8"
@@ -283,10 +258,8 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:padding="10dp"
+                android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="48dp"
-                android:minHeight="48dp"
                 android:text="@string/butt9"
                 android:id="@+id/butt9"
                 android:tag="9"
@@ -294,8 +267,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:padding="10dp"
+                android:layout_marginStart="5dp"
                 android:minWidth="0dp"
                 android:text="@string/butt_hint"
                 android:id="@+id/hint"
@@ -316,8 +288,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.885"
-        android:layout_marginStart="16dp"
+        app:layout_constraintVertical_bias="0.86"
+        android:layout_marginStart="@dimen/game_activity_horizontal_margin"
         >
     <TextView
         android:layout_width="wrap_content"
@@ -343,7 +315,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.965"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/game_activity_horizontal_margin"
         >
         <Button
             android:id="@+id/button"

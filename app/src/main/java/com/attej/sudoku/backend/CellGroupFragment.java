@@ -2,19 +2,17 @@ package com.attej.sudoku.backend;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableRow;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import java.util.ArrayList;
 import com.attej.sudoku.R;
 
 public class CellGroupFragment extends Fragment {
@@ -30,10 +28,6 @@ public class CellGroupFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            //mParam1 = getArguments().getString(ARG_PARAM1);
-            //mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -83,21 +77,43 @@ public class CellGroupFragment extends Fragment {
     }
 
 
-    public int getGroupId() {
-        return groupId;
-    }
-
-
     public void setValue(int position, int value, boolean startingCell) {
         cells = new int[]{R.id.cell1, R.id.cell2, R.id.cell3, R.id.cell4,
                 R.id.cell5, R.id.cell6, R.id.cell7, R.id.cell8, R.id.cell9};
         Cell currentCell = view.findViewById(cells[position]);
         currentCell.setNumber(value, startingCell);
+        refreshContentDescriptions();
     }
 
 
-    public int[] getCells() {
-        return cells;
+    public void setCellSize() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager()
+                .getDefaultDisplay()
+                .getMetrics(displayMetrics);
+
+        TableRow tableRow = view.findViewById(R.id.row1);
+        tableRow.setMinimumWidth(displayMetrics.widthPixels / 15);
+        tableRow.setMinimumHeight(displayMetrics.widthPixels / 15);
+
+        tableRow = view.findViewById(R.id.row2);
+        tableRow.setMinimumWidth(displayMetrics.widthPixels / 15);
+        tableRow.setMinimumHeight(displayMetrics.widthPixels / 15);
+
+        tableRow = view.findViewById(R.id.row3);
+        tableRow.setMinimumWidth(displayMetrics.widthPixels / 15);
+        tableRow.setMinimumHeight(displayMetrics.widthPixels / 15);
+    }
+
+
+    private void refreshContentDescriptions() {
+        Cell cell;
+        for (int i = 0; i < 9; i++) {
+            cell = view.findViewById(cells[i]);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.DONUT) {
+                cell.setContentDescription(String.format(getString(R.string.cell_description), groupId, i, cell.getNumber()));
+            }
+        }
     }
 
 
@@ -106,28 +122,13 @@ public class CellGroupFragment extends Fragment {
     }
 
 
-    public boolean checkGroupCorrect() {
-        ArrayList<Integer> numbers = new ArrayList<>();
-        for (int cell : cells) {
-            TextView textView = view.findViewById(cell);
-            int number = Integer.parseInt(textView.getText().toString());
-            if (numbers.contains(number)) {
-                return false;
-            } else {
-                numbers.add(number);
-            }
-        }
-        return true;
-    }
-
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+            throw new RuntimeException(context + " must implement OnFragmentInteractionListener");
         }
     }
 

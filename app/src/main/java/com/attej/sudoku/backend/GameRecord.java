@@ -1,10 +1,8 @@
 package com.attej.sudoku.backend;
 
-import java.io.FileOutputStream;
-
 public class GameRecord {
-    private int timeSeconds = 0;
-    private int difficulty = 0;
+    private final int timeSeconds;
+    private final int difficulty;
 
 
     public GameRecord(int timeSeconds, int difficulty) {

@@ -7,32 +7,18 @@ public class CheckSolution {
     /**
      * Checks if the sudoku has a solution
      * @param grid sudoku to be checked
-     * @return true if the sudoku has exactlt one solution
+     * @return true if the sudoku has exactly one solution
      */
     public static boolean checkSolution(int[][] grid) {
         counter = 0;
         solveSudoku(grid);
-        if (counter == 1)
-            return true;
-        return false;
+        return counter == 1;
     }
 
 
     public static boolean checkSolution(Board board) {
         int[][] grid = board.getGameCells();
         return checkSolution(grid);
-    }
-
-
-    public static boolean checkFullSolution(Board board) {
-        int[][] grid = board.getGameCells();
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                if (!(isValid(grid, i, j, grid[i][j])))
-                    return false;
-            }
-        }
-        return true;
     }
 
 
@@ -151,10 +137,7 @@ public class CheckSolution {
         int colStart = col - col % 3;
         for (int i = 0; i < 3; i++)
         {
-            for (int j = 0; j < 3; j++)
-            {
-                subGrid[i][j] = grid[i + rowStart][j + colStart];
-            }
+            System.arraycopy(grid[i + rowStart], 0 + colStart, subGrid[i], 0, 3);
         }
         return subGrid;
     }
