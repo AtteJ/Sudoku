@@ -13,6 +13,8 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class GameDifficultyActivity extends AppCompatActivity {
 
+    private FirebaseAnalytics mFireBaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +29,7 @@ public class GameDifficultyActivity extends AppCompatActivity {
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
         disableButtons(false);
+        mFireBaseAnalytics = FirebaseAnalytics.getInstance(this);
    }
 
 

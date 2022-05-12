@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +34,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private Cell previouslySelected;
 
     private final ArrayList<Cell> wrongCells = new ArrayList<>();
+
+    private FirebaseAnalytics mFireBaseAnalytics;
 
     private int clickedGroup;
     private int clickedCellId;
@@ -168,6 +172,13 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private void setButtColors() {
         findViewById(R.id.del).setBackgroundColor(getResources().getColor(R.color.del));
         findViewById(R.id.buttNote).setBackgroundColor(getResources().getColor(R.color.note));
+    }
+
+
+    private void setRowHeight() {
+        for (int i = 0; i < cellGroupFragments.length; i++) {
+            ((CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragments[i])).setRowHeight();
+        }
     }
 
 
@@ -554,7 +565,13 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         stopTimer();
         int seconds = (int) (updateTime / 1000);
 
-        GameRecord record = new GameRecord(seconds, difficulty);
+        minutes = seconds / 60;
+        seconds = seconds % 60;
+        String message = String.format(getString(R.string.game_won_message), minutes, seconds);
+        if (stats.getBestTime(difficulty) > (int) (updateTime / 1000) || stats.getBestTime(difficulty) != 0)
+            message += "New Best Time!";
+
+        GameRecord record = new GameRecord((int)(updateTime / 1000), difficulty);
         if (difficulty == 0)
             stats.addExperience(5);
         if (difficulty == 1)
@@ -563,13 +580,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
             stats.addExperience(15);
         stats.addRecord(record);
         stats.saveStats();
-
-
-        minutes = seconds / 60;
-        seconds = seconds % 60;
-        String message = String.format(getString(R.string.game_won_message), minutes, seconds);
-        if (stats.getBestTime(difficulty) > (int) (updateTime / 1000) || stats.getBestTime(difficulty) == 0)
-            message += " New Best Time!";
 
         new AlertDialog.Builder(this)
                 .setTitle("Game won!")

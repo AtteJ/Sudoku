@@ -46,8 +46,34 @@ public class CellGroupFragment extends Fragment {
         return view;
     }
 
+
+    private void setContentDescriptors() {
+         for (int j = 0; j < getCells().length; j++) {
+             view.findViewById(getCells()[j]).setContentDescription("Subgrid " + groupId + "Cell " + (j + 1));
+
+        }
+    }
+
+
     public void setGroupId(int groupId) {
         this.groupId = groupId;
+        setContentDescriptors();
+    }
+
+
+    public void setRowHeight() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+
+        TableRow row = view.findViewById(R.id.row1);
+        row.setMinimumHeight(width / 15);
+
+        row = view.findViewById(R.id.row2);
+        row.setMinimumHeight(width / 15);
+
+        row = view.findViewById(R.id.row3);
+        row.setMinimumHeight(width / 15);
     }
 
 
