@@ -122,6 +122,11 @@ public class CellGroupFragment extends Fragment {
     }
 
 
+    public int[] getCells() {
+        return cells;
+    }
+
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);

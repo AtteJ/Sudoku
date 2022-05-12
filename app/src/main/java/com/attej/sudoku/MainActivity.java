@@ -18,6 +18,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 // import com.google.android.gms.ads.RequestConfiguration;
 
+import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -50,11 +51,20 @@ public class MainActivity extends AppCompatActivity {
 
         refreshStats();
 
+        List<String> testDeviceIds = Arrays.asList("20D91EB201806F1C7EA6457155F468D8");    // Test ads
+        RequestConfiguration configuration =
+                new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build(); // Test ads
+        MobileAds.setRequestConfiguration(configuration);
 
-        // List<String> testDeviceIds = Arrays.asList("20D91EB201806F1C7EA6457155F468D8");    // Test ads
-        // RequestConfiguration configuration =
-        //         new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build(); // Test ads
-        // MobileAds.setRequestConfiguration(configuration);                                   // Test ads
+        MobileAds.initialize(this, initializationStatus -> {
+            mAdView = findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+            System.out.println("Is test device: " + adRequest.isTestDevice(this));
+            System.out.println("Ads loaded: " + initializationStatus.toString());
+        });
+
+                                           // Test ads
 
 
         mFireBaseAnalytics = FirebaseAnalytics.getInstance(this);

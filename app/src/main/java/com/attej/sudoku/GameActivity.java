@@ -1,8 +1,6 @@
 package com.attej.sudoku;
 
 
-
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,8 +32,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private Cell previouslySelected;
 
     private final ArrayList<Cell> wrongCells = new ArrayList<>();
-
-    private FirebaseAnalytics mFireBaseAnalytics;
 
     private int clickedGroup;
     private int clickedCellId;
