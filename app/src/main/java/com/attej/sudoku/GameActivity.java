@@ -108,6 +108,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     }
 
 
+
+
+
     private void addGivens() {
         //Add all givens from the current board
         CellGroupFragment tempCellGroupFragment;

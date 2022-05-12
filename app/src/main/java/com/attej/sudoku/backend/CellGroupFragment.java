@@ -49,8 +49,18 @@ public class CellGroupFragment extends Fragment {
         return view;
     }
 
+
+    private void setContentDescriptors() {
+         for (int j = 0; j < getCells().length; j++) {
+             view.findViewById(getCells()[j]).setContentDescription("Subgrid " + groupId + "Cell " + (j + 1));
+
+        }
+    }
+
+
     public void setGroupId(int groupId) {
         this.groupId = groupId;
+        setContentDescriptors();
     }
 
 
@@ -64,6 +74,11 @@ public class CellGroupFragment extends Fragment {
                 R.id.cell5, R.id.cell6, R.id.cell7, R.id.cell8, R.id.cell9};
         Cell currentCell = view.findViewById(cells[position]);
         currentCell.setNumber(value, startingCell);
+    }
+
+
+    public int[] getCells() {
+        return cells;
     }
 
 
