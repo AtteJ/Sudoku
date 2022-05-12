@@ -9,11 +9,14 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class GameDifficultyActivity extends AppCompatActivity {
 
     private FirebaseAnalytics mFireBaseAnalytics;
+    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,10 @@ public class GameDifficultyActivity extends AppCompatActivity {
 
         disableButtons(false);
         mFireBaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        mAdView = findViewById(R.id.adView2);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
    }
 
 

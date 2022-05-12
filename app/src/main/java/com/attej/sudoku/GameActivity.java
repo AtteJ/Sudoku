@@ -1,15 +1,15 @@
 package com.attej.sudoku;
 
 
+
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -121,6 +121,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     }
 
 
+
     private void refreshCellSizes() {
         for (int i = 0; i < cellGroupFragments.length; i++) {
             ((CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragments[i])).setCellSize();
@@ -176,8 +177,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
 
     private void setRowHeight() {
-        for (int i = 0; i < cellGroupFragments.length; i++) {
-            ((CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragments[i])).setRowHeight();
+        for (int cellGroupFragment : cellGroupFragments) {
+            ((CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragment)).setRowHeight();
         }
     }
 
@@ -271,7 +272,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         clickedGroup = groupId;
         clickedCellId = cellId;
 
-        Log.i(TAG, "Clicked group " + groupId + ", cell " + cellId);
+        Log.i("TAG", "Clicked group " + groupId + ", cell " + cellId);
 
         if (!isStartPiece(groupId, cellId)) {
            selectCell();

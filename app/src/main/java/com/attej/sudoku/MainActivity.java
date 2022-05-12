@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import com.attej.sudoku.backend.ExperienceBar;
 import com.attej.sudoku.backend.Stats;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 import android.content.Intent;
 import android.view.View;
@@ -14,15 +13,31 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+// import com.google.android.gms.ads.RequestConfiguration;
+
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.firebase.analytics.FirebaseAnalytics;
+
+import java.util.Arrays;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
     private int experience = 0;
     private FirebaseAnalytics mFireBaseAnalytics;
 
+    // private static final String TAG = "MainActivity";
+    private AdView mAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         // Obtain the FirebaseAnalytics instance.
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -32,7 +47,17 @@ public class MainActivity extends AppCompatActivity {
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "main");
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
+
         refreshStats();
+
+
+        // List<String> testDeviceIds = Arrays.asList("20D91EB201806F1C7EA6457155F468D8");    // Test ads
+        // RequestConfiguration configuration =
+        //         new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build(); // Test ads
+        // MobileAds.setRequestConfiguration(configuration);                                   // Test ads
+
+
+        mFireBaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 
 
