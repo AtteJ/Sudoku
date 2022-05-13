@@ -8,6 +8,7 @@ import com.attej.sudoku.backend.Stats;
 
 import android.content.Intent;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -48,6 +49,30 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        disableButtons(false);
+
+        setConsentForm();
+        if (consentInformation.getConsentStatus() == ConsentInformation.ConsentStatus.NOT_REQUIRED) {
+            disableButtons(true);
+            setAnalytics();
+            setTestAds();
+            setAds();
+        }
+
+        consentInformation.reset();  // TODO: remove in prod
+        refreshStats();
+    }
+
+
+    private void disableButtons(boolean enabled) {
+        Button start = findViewById(R.id.buttonStartNewGame);
+        Button stats = findViewById(R.id.buttonViewStats);
+        start.setEnabled(enabled);
+        stats.setEnabled(enabled);
+    }
+
+
+    private void setConsentForm() {
         // Set tag for underage of consent. false means users are not underage.
         ConsentRequestParameters params = new ConsentRequestParameters
                 .Builder()
@@ -76,13 +101,6 @@ public class MainActivity extends AppCompatActivity {
                         setAnalytics();
                     }
                 });
-
-        if (consentInformation.getConsentStatus() == ConsentInformation.ConsentStatus.NOT_REQUIRED)
-            setAnalytics();
-
-
-        consentInformation.reset();  // TODO: remove in prod
-        refreshStats();
     }
 
 
@@ -106,7 +124,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                         if (consentInformation.getConsentStatus() == ConsentInformation.ConsentStatus.OBTAINED) {
                             System.out.println("Consent succeeded");
+                            disableButtons(true);
                             setAnalytics();
+                            setTestAds();
+                            setAds();
                         }
 
                     }
@@ -129,12 +150,10 @@ public class MainActivity extends AppCompatActivity {
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Main");
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "main");
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+    }
 
-        List<String> testDeviceIds = Arrays.asList("20D91EB201806F1C7EA6457155F468D8");     // Test ads TODO: remove in prod
-        RequestConfiguration configuration =
-                new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build(); // Test ads
-        MobileAds.setRequestConfiguration(configuration);                                   // Test ads
 
+    private void setAds() {
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         MobileAds.initialize(this, initializationStatus -> {
@@ -142,9 +161,15 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("Is test device: " + adRequest.isTestDevice(this));
             System.out.println("Ads loaded: " + initializationStatus);
         });
-
     }
 
+
+    private void setTestAds() {
+        List<String> testDeviceIds = Arrays.asList("20D91EB201806F1C7EA6457155F468D8");     // Test ads TODO: remove in prod
+        RequestConfiguration configuration =
+                new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build(); // Test ads
+        MobileAds.setRequestConfiguration(configuration);                                   // Test ads
+    }
 
 
     @Override

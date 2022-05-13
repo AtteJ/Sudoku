@@ -6,6 +6,7 @@
 
     <string name="banner_ad_unit_id_main">ca-app-pub-6148517439938867/3386813107</string>
     <string name="banner_ad_unit_id_difficulty">ca-app-pub-6148517439938867/6830114532</string>
+    <string name="banner_ad_unit_id_game">ca-app-pub-6148517439938867/2801625214</string>
 
     <string name="new_game">New Game</string>
     <string name="stats">Stats</string>

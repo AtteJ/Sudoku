@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -325,5 +326,15 @@
             android:text="@string/go_back"
             android:layout_marginEnd="35dp"
             />
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            ads:adSize="FLUID"
+            ads:adUnitId="@string/banner_ad_unit_id_main"
+            >
+        </com.google.android.gms.ads.AdView>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

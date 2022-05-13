@@ -11,33 +11,56 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.RequestConfiguration;
 import com.google.firebase.analytics.FirebaseAnalytics;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class GameDifficultyActivity extends AppCompatActivity {
 
     private FirebaseAnalytics mFireBaseAnalytics;
     private AdView mAdView;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_difficulty);
 
-        // Obtain the FirebaseAnalytics instance.
-        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "Difficulty screen");
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "difficulty");
-        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "difficulty");
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-
         disableButtons(false);
-        mFireBaseAnalytics = FirebaseAnalytics.getInstance(this);
 
-        mAdView = findViewById(R.id.adView2);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        setTestAds();
+        setAds();
+        setAnalytics();
    }
+
+
+   private void setAnalytics() {
+       // Obtain the FirebaseAnalytics instance.
+       mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+       Bundle bundle = new Bundle();
+       bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "Difficulty screen");
+       bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "difficulty");
+       bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "difficulty");
+       mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+   }
+
+
+   private void setAds() {
+       mAdView = findViewById(R.id.adView2);
+       AdRequest adRequest = new AdRequest.Builder().build();
+       mAdView.loadAd(adRequest);
+   }
+
+
+    private void setTestAds() {
+        List<String> testDeviceIds = Arrays.asList("20D91EB201806F1C7EA6457155F468D8");     // Test ads TODO: remove in prod
+        RequestConfiguration configuration =
+                new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build(); // Test ads
+        MobileAds.setRequestConfiguration(configuration);                                   // Test ads
+    }
 
 
     private void disableButtons(boolean isDisabled) {

@@ -22,9 +22,16 @@ import com.attej.sudoku.backend.CheckSolution;
 import com.attej.sudoku.backend.GameRecord;
 import com.attej.sudoku.backend.GenerateSudoku;
 import com.attej.sudoku.backend.Stats;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.RequestConfiguration;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GameActivity extends AppCompatActivity implements CellGroupFragment.OnFragmentInteractionListener {
@@ -60,14 +67,18 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
     private Stats stats;
 
+    private AdView mAdView;
+    private FirebaseAnalytics mFirebaseAnalytics;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        // Obtain the FirebaseAnalytics instance.
-        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        setTestAds();
+        setAds();
+        setAnalytics();
 
         stats = new Stats(getApplicationContext());
 
@@ -82,17 +93,39 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         hintsText = findViewById(R.id.hintsCounter);
         updateCounters();
 
+        timer = findViewById(R.id.stopWatch);
+        handler = new Handler() ;
+
+        startTimer();
+    }
+
+
+    private void setAnalytics() {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(difficulty));
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "new game");
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "new game");
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+    }
 
-        timer = findViewById(R.id.stopWatch);
-        handler = new Handler() ;
 
-        startTimer();
+    private void setAds() {
+        mAdView = findViewById(R.id.adView3);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        MobileAds.initialize(this, initializationStatus -> {
+            mAdView.loadAd(adRequest);
+            System.out.println("Is test device: " + adRequest.isTestDevice(this));
+            System.out.println("Ads loaded: " + initializationStatus);
+        });
+    }
+
+
+    private void setTestAds() {
+        List<String> testDeviceIds = Arrays.asList("20D91EB201806F1C7EA6457155F468D8");     // Test ads TODO: remove in prod
+        RequestConfiguration configuration =
+                new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build(); // Test ads
+        MobileAds.setRequestConfiguration(configuration);                                   // Test ads
     }
 
 
