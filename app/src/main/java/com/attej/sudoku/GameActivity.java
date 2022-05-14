@@ -2,15 +2,18 @@ package com.attej.sudoku;
 
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
@@ -76,8 +79,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        setTestAds();
-        setAds();
         setAnalytics();
 
         stats = new Stats(getApplicationContext());
@@ -110,25 +111,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     }
 
 
-    private void setAds() {
-        mAdView = findViewById(R.id.adView3);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        MobileAds.initialize(this, initializationStatus -> {
-            mAdView.loadAd(adRequest);
-            System.out.println("Is test device: " + adRequest.isTestDevice(this));
-            System.out.println("Ads loaded: " + initializationStatus);
-        });
-    }
-
-
-    private void setTestAds() {
-        List<String> testDeviceIds = Arrays.asList("20D91EB201806F1C7EA6457155F468D8");     // Test ads TODO: remove in prod
-        RequestConfiguration configuration =
-                new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build(); // Test ads
-        MobileAds.setRequestConfiguration(configuration);                                   // Test ads
-    }
-
-
     private void createSudoku(int difficulty) {
         int givens = generateGivens(difficulty);
         solution = new Board(GenerateSudoku.getSolution());
@@ -148,7 +130,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                 thisCellGroupFragment.setGroupId(i);
         }
     }
-
 
 
     private void refreshCellSizes() {
@@ -186,13 +167,16 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private int generateGivens(int difficulty) {
         switch (difficulty) {
             case 0: {
-                return ThreadLocalRandom.current().nextInt(30, 36);
+                return ThreadLocalRandom.current().nextInt(36, 40);
             }
             case 1: {
-                return ThreadLocalRandom.current().nextInt(25, 30);
+                return ThreadLocalRandom.current().nextInt(30, 35);
             }
             case 2: {
-                return ThreadLocalRandom.current().nextInt(17, 25);
+                return ThreadLocalRandom.current().nextInt(25, 29);
+            }
+            case 3: {
+                return ThreadLocalRandom.current().nextInt(17, 24);
             }
         }
         return 0;
@@ -202,6 +186,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private void setButtColors() {
         findViewById(R.id.del).setBackgroundColor(getResources().getColor(R.color.del));
         findViewById(R.id.buttNote).setBackgroundColor(getResources().getColor(R.color.note));
+        findViewById(R.id.hint).setBackgroundColor(getResources().getColor(R.color.teal_700));
+
+        setNumButtColors();
     }
 
 
@@ -598,8 +585,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         minutes = seconds / 60;
         seconds = seconds % 60;
         String message = String.format(getString(R.string.game_won_message), minutes, seconds);
-        if (stats.getBestTime(difficulty) > (int) (updateTime / 1000) || stats.getBestTime(difficulty) != 0)
-            message += "New Best Time!";
+        if (stats.getBestTime(difficulty) > (int) (updateTime / 1000) || stats.getBestTime(difficulty) == 0)
+            message += " New Best Time!";
 
         GameRecord record = new GameRecord((int)(updateTime / 1000), difficulty);
         if (difficulty == 0)
@@ -608,6 +595,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
             stats.addExperience(10);
         if (difficulty == 2)
             stats.addExperience(15);
+        if (difficulty == 3)
+            stats.addExperience(25);
         stats.addRecord(record);
         stats.saveStats();
 

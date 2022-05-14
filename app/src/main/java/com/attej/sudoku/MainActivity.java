@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             setAds();
         }
 
-        consentInformation.reset();  // TODO: remove in prod
+        // consentInformation.reset();  // TODO: remove in prod
         refreshStats();
     }
 
@@ -165,17 +165,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setTestAds() {
-        List<String> testDeviceIds = Arrays.asList("20D91EB201806F1C7EA6457155F468D8");     // Test ads TODO: remove in prod
+        List<String> testDeviceIds = Arrays.asList("20D91EB201806F1C7EA6457155F468D8", "62AEE42886038F87608F7F6F5D0B41BA");     // Test ads TODO: remove in prod
         RequestConfiguration configuration =
-                new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build(); // Test ads
+              new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build(); // Test ads
         MobileAds.setRequestConfiguration(configuration);                                   // Test ads
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        refreshStats();
     }
 
 
@@ -199,7 +192,8 @@ public class MainActivity extends AppCompatActivity {
     final ActivityResultLauncher<Intent> NewGameActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
+                if (result.getResultCode() == 1) {
+                    disableButtons(true);
                     refreshStats();
                 }
             });
@@ -207,14 +201,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onStartNewGameButtonClicked(View view) {
+        disableButtons(false);
         Intent intent = new Intent(this, GameDifficultyActivity.class);
         NewGameActivityResultLauncher.launch(intent);
     }
 
 
     public void onViewStatsButtonClicked(View view) {
+        disableButtons(false);
         Intent intent = new Intent(this, StatsActivity.class);
-        startActivity(intent);
+        NewGameActivityResultLauncher.launch(intent);
     }
 
 }

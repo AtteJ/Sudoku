@@ -2,10 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:ads="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
+        android:id="@+id/counters"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,6 +32,7 @@
     </LinearLayout>
 
     <TableLayout
+        android:id="@+id/mainGrid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/game_grid_horizontal_margin"
@@ -39,8 +40,9 @@
         android:stretchColumns="*"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.125"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/counters"
+        app:layout_constraintVertical_bias="0.025"
         >
         <TableRow
             android:layout_width="match_parent"
@@ -131,14 +133,16 @@
     </TableLayout>
 
     <TableLayout
-        android:layout_width="match_parent"
+        android:id="@+id/numButtons"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.765"
-        android:layout_marginStart="@dimen/game_grid_horizontal_margin"
-        android:layout_marginEnd="@dimen/game_grid_horizontal_margin">
+        app:layout_constraintRight_toLeftOf="@+id/otherButtons"
+        app:layout_constraintTop_toBottomOf="@+id/mainGrid"
+        app:layout_constraintVertical_bias="0.3"
+        >
         <TableRow
             android:id="@+id/numButtonsTop"
             android:orientation="horizontal"
@@ -153,6 +157,7 @@
                 android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="48dp"
                 android:text="@string/butt1"
+                android:textColor="@color/white"
                 android:id="@+id/butt1"
                 android:tag="1"
                 android:onClick="onNumButtClicked"/>
@@ -162,27 +167,26 @@
                 android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="48dp"
                 android:text="@string/butt2"
+                android:textColor="@color/white"
                 android:id="@+id/butt2"
                 android:tag="2"
                 android:onClick="onNumButtClicked"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="48dp"
                 android:text="@string/butt3"
+                android:textColor="@color/white"
                 android:id="@+id/butt3"
                 android:tag="3"
                 android:onClick="onNumButtClicked"/>
         </TableRow>
-
         <TableRow
             android:id="@+id/numButtonsCenter"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxHeight="15sp"
-            android:padding="@dimen/button_padding"
             >
             <Button
                 android:layout_width="wrap_content"
@@ -190,6 +194,7 @@
                 android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="48dp"
                 android:text="@string/butt4"
+                android:textColor="@color/white"
                 android:id="@+id/butt4"
                 android:tag="4"
                 android:onClick="onNumButtClicked"/>
@@ -199,37 +204,21 @@
                 android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="48dp"
                 android:text="@string/butt5"
+                android:textColor="@color/white"
                 android:id="@+id/butt5"
                 android:tag="5"
                 android:onClick="onNumButtClicked"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="48dp"
                 android:text="@string/butt6"
+                android:textColor="@color/white"
                 android:id="@+id/butt6"
                 android:tag="6"
                 android:onClick="onNumButtClicked"/>
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:minWidth="48dp"
-                android:text="@string/butt_note"
-                android:id="@+id/buttNote"
-                android:onClick="onNoteButtClicked"/>
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:padding="@dimen/button_padding"
-                android:minWidth="48dp"
-                android:text="@string/butt_del"
-                android:id="@+id/del"
-                android:onClick="onDelButtClicked"/>
-        </TableRow>
 
+        </TableRow>
         <TableRow
             android:id="@+id/numButtonsBot"
             android:orientation="horizontal"
@@ -244,6 +233,7 @@
                 android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="48dp"
                 android:text="@string/butt7"
+                android:textColor="@color/white"
                 android:id="@+id/butt7"
                 android:tag="7"
                 android:onClick="onNumButtClicked"/>
@@ -253,31 +243,68 @@
                 android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="48dp"
                 android:text="@string/butt8"
+                android:textColor="@color/white"
                 android:id="@+id/butt8"
                 android:tag="8"
                 android:onClick="onNumButtClicked"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="48dp"
                 android:text="@string/butt9"
+                android:textColor="@color/white"
                 android:id="@+id/butt9"
                 android:tag="9"
                 android:onClick="onNumButtClicked"/>
+        </TableRow>
+    </TableLayout>
+
+    <TableLayout
+        android:id="@+id/otherButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/numButtons"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mainGrid"
+        app:layout_constraintVertical_bias="0.3"
+        >
+        <TableRow>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
+                android:layout_marginEnd="@dimen/button_margin"
+                android:minWidth="48dp"
+                android:text="@string/butt_note"
+                android:textColor="@color/white"
+                android:id="@+id/buttNote"
+                android:onClick="onNoteButtClicked" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/button_padding"
+                android:minWidth="48dp"
+                android:text="@string/butt_del"
+                android:textColor="@color/white"
+                android:id="@+id/del"
+                android:onClick="onDelButtClicked" />
+        </TableRow>
+        <TableRow>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/button_margin"
                 android:minWidth="0dp"
                 android:text="@string/butt_hint"
+                android:textColor="@color/white"
                 android:id="@+id/hint"
                 android:onClick="onHintButtonClicked"/>
-
         </TableRow>
     </TableLayout>
 
     <LinearLayout
+        android:id="@+id/stopWatchLine"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -288,20 +315,21 @@
         android:maxWidth="5sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.86"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/numButtons"
+        app:layout_constraintVertical_bias="0.3"
         android:layout_marginStart="@dimen/game_activity_horizontal_margin"
         >
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/stopWatch"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/stopWatch"
+            android:textColor="?android:textColorPrimary"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -314,7 +342,7 @@
         android:maxHeight="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stopWatchLine"
         app:layout_constraintVertical_bias="0.965"
         android:layout_marginStart="@dimen/game_activity_horizontal_margin"
         >
@@ -324,17 +352,7 @@
             android:layout_height="wrap_content"
             android:onClick="onGoBackButtonClicked"
             android:text="@string/go_back"
-            android:layout_marginEnd="35dp"
+            android:textColor="@color/white"
             />
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            ads:adSize="FLUID"
-            ads:adUnitId="@string/banner_ad_unit_id_main"
-            >
-        </com.google.android.gms.ads.AdView>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

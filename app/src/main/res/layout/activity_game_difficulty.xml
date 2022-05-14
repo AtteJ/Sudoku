@@ -8,62 +8,68 @@
     android:gravity="center_horizontal">
 
     <TextView
-        android:id="@+id/textView10"
+        android:id="@+id/textDifficulty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/choose_difficulty"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
+        ads:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.231" />
 
     <LinearLayout
+        android:id="@+id/difficultyButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintTop_toBottomOf="@+id/textDifficulty"
+        app:layout_constraintVertical_bias="0.2"
         >
         <Button
             android:id="@+id/buttonEasy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/button_margin"
             android:onClick="onDifficultyButtonClicked"
             android:text="@string/easy"
+            android:textColor="@color/white"
             android:tag="0"
-            android:gravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.568" />
+            android:gravity="center"/>
         <Button
             android:id="@+id/buttonNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/button_margin"
             android:onClick="onDifficultyButtonClicked"
             android:text="@string/normal"
+            android:textColor="@color/white"
             android:tag="1"
-            android:gravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.568" />
+            android:gravity="center"/>
         <Button
             android:id="@+id/buttonHard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/button_margin"
             android:onClick="onDifficultyButtonClicked"
             android:text="@string/hard"
+            android:textColor="@color/white"
             android:tag="2"
-            android:gravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.568" />
+            android:gravity="center"/>
+        <Button
+            android:id="@+id/buttonExpert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/button_margin"
+            android:onClick="onDifficultyButtonClicked"
+            android:text="@string/expert"
+            android:textColor="@color/white"
+            android:tag="3"
+            android:gravity="center"/>
     </LinearLayout>
 
     <com.google.android.gms.ads.AdView
@@ -77,8 +83,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.8">
+        app:layout_constraintTop_toBottomOf="@+id/difficultyButtons"
+        app:layout_constraintVertical_bias="0.35">
     </com.google.android.gms.ads.AdView>
 
     <Button
@@ -86,6 +92,7 @@
         android:layout_height="wrap_content"
         android:onClick="onGoBackButtonClicked"
         android:text="@string/go_back"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"

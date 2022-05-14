@@ -11,8 +11,8 @@ android {
         applicationId "com.attej.sudoku"
         minSdk 21
         targetSdk 32
-        versionCode 8
-        versionName '1.0.4'
+        versionCode 10
+        versionName '1.0.5'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

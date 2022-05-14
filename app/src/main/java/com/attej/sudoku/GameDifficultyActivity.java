@@ -56,7 +56,7 @@ public class GameDifficultyActivity extends AppCompatActivity {
 
 
     private void setTestAds() {
-        List<String> testDeviceIds = Arrays.asList("20D91EB201806F1C7EA6457155F468D8");     // Test ads TODO: remove in prod
+        List<String> testDeviceIds = Arrays.asList("20D91EB201806F1C7EA6457155F468D8", "62AEE42886038F87608F7F6F5D0B41BA");     // Test ads TODO: remove in prod
         RequestConfiguration configuration =
                 new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build(); // Test ads
         MobileAds.setRequestConfiguration(configuration);                                   // Test ads
@@ -67,6 +67,7 @@ public class GameDifficultyActivity extends AppCompatActivity {
         findViewById(R.id.buttonEasy).setEnabled(!isDisabled);
         findViewById(R.id.buttonNormal).setEnabled(!isDisabled);
         findViewById(R.id.buttonHard).setEnabled(!isDisabled);
+        findViewById(R.id.buttonExpert).setEnabled(!isDisabled);
     }
 
 

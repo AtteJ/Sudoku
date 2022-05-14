@@ -29,6 +29,7 @@
     <string name="easy">Easy</string>
     <string name="normal">Normal</string>
     <string name="hard">Hard</string>
+    <string name="expert">Expert</string>
 
     <string name="game_won_message">Game Won! Time: %1$02d:%2$02d</string>
 
