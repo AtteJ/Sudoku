@@ -1,6 +1,5 @@
 package com.attej.sudoku;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -20,10 +19,6 @@ import java.util.List;
 
 public class GameDifficultyActivity extends AppCompatActivity {
 
-    private FirebaseAnalytics mFireBaseAnalytics;
-    private AdView mAdView;
-    private FirebaseAnalytics mFirebaseAnalytics;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +34,7 @@ public class GameDifficultyActivity extends AppCompatActivity {
 
    private void setAnalytics() {
        // Obtain the FirebaseAnalytics instance.
-       mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+       FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
        Bundle bundle = new Bundle();
        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "Difficulty screen");
        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "difficulty");
@@ -49,7 +44,7 @@ public class GameDifficultyActivity extends AppCompatActivity {
 
 
    private void setAds() {
-       mAdView = findViewById(R.id.adView2);
+       AdView mAdView = findViewById(R.id.adView2);
        AdRequest adRequest = new AdRequest.Builder().build();
        mAdView.loadAd(adRequest);
    }

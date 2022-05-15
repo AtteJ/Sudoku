@@ -6,7 +6,6 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.attej.sudoku.R;
@@ -106,11 +105,6 @@ public class Cell extends TableLayout {
 
             }
         }
-    }
-
-
-    public void setCellSize() {
-        setMinimumHeight(getWidth()*2);
     }
 
 

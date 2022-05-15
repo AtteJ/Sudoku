@@ -1,6 +1,5 @@
 package com.attej.sudoku;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 import com.attej.sudoku.backend.ExperienceBar;
@@ -8,32 +7,25 @@ import com.attej.sudoku.backend.Stats;
 
 import android.content.Intent;
 import android.view.View;
-import android.widget.Button;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-// import com.google.android.gms.ads.RequestConfiguration;
 
 import com.google.android.gms.ads.RequestConfiguration;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
-
-import java.util.Arrays;
-import java.util.List;
 
 import com.google.android.ump.ConsentForm;
 import com.google.android.ump.ConsentInformation;
 import com.google.android.ump.ConsentRequestParameters;
-import com.google.android.ump.FormError;
 import com.google.android.ump.UserMessagingPlatform;
 
+import java.util.Arrays;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -49,26 +41,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        disableButtons(false);
-
         setConsentForm();
         if (consentInformation.getConsentStatus() == ConsentInformation.ConsentStatus.NOT_REQUIRED) {
-            disableButtons(true);
             setAnalytics();
             setTestAds();
             setAds();
         }
 
-        // consentInformation.reset();  // TODO: remove in prod
+        consentInformation.reset();  // TODO: remove in prod
         refreshStats();
-    }
-
-
-    private void disableButtons(boolean enabled) {
-        Button start = findViewById(R.id.buttonStartNewGame);
-        Button stats = findViewById(R.id.buttonViewStats);
-        start.setEnabled(enabled);
-        stats.setEnabled(enabled);
     }
 
 
@@ -83,23 +64,17 @@ public class MainActivity extends AppCompatActivity {
         consentInformation.requestConsentInfoUpdate(
                 this,
                 params,
-                new ConsentInformation.OnConsentInfoUpdateSuccessListener() {
-                    @Override
-                    public void onConsentInfoUpdateSuccess() {
-                        // The consent information state was updated.
-                        // You are now ready to check if a form is available.
-                        if (consentInformation.isConsentFormAvailable()) {
-                            loadForm();
-                        }
+                () -> {
+                    // The consent information state was updated.
+                    // You are now ready to check if a form is available.
+                    if (consentInformation.isConsentFormAvailable()) {
+                        loadForm();
+                    }
 
-                    }
                 },
-                new ConsentInformation.OnConsentInfoUpdateFailureListener() {
-                    @Override
-                    public void onConsentInfoUpdateFailure(FormError formError) {
-                        // Handle the error.
-                        setAnalytics();
-                    }
+                formError -> {
+                    // Handle the error.
+                    setAnalytics();
                 });
     }
 
@@ -107,36 +82,26 @@ public class MainActivity extends AppCompatActivity {
     public void loadForm() {
         UserMessagingPlatform.loadConsentForm(
                 this,
-                new UserMessagingPlatform.OnConsentFormLoadSuccessListener() {
-                    @Override
-                    public void onConsentFormLoadSuccess(ConsentForm consentForm) {
-                        MainActivity.this.consentForm = consentForm;
-                        if(consentInformation.getConsentStatus() == ConsentInformation.ConsentStatus.REQUIRED) {
-                            consentForm.show(
-                                    MainActivity.this,
-                                    new ConsentForm.OnConsentFormDismissedListener() {
-                                        @Override
-                                        public void onConsentFormDismissed(@Nullable FormError formError) {
-                                            // Handle dismissal by reloading form.
-                                            loadForm();
-                                        }
-                                    });
-                        }
-                        if (consentInformation.getConsentStatus() == ConsentInformation.ConsentStatus.OBTAINED) {
-                            System.out.println("Consent succeeded");
-                            disableButtons(true);
-                            setAnalytics();
-                            setTestAds();
-                            setAds();
-                        }
+                consentForm -> {
+                    MainActivity.this.consentForm = consentForm;
+                    if(consentInformation.getConsentStatus() == ConsentInformation.ConsentStatus.REQUIRED) {
+                        consentForm.show(
+                                MainActivity.this,
+                                formError -> {
+                                    // Handle dismissal by reloading form.
+                                    loadForm();
+                                });
+                    }
+                    if (consentInformation.getConsentStatus() == ConsentInformation.ConsentStatus.OBTAINED) {
+                        System.out.println("Consent succeeded");
+                        setAnalytics();
+                        setTestAds();
+                        setAds();
+                    }
 
-                    }
                 },
-                new UserMessagingPlatform.OnConsentFormLoadFailureListener() {
-                    @Override
-                    public void onConsentFormLoadFailure(FormError formError) {
-                        // Handle the error
-                    }
+                formError -> {
+                    // Handle the error
                 }
         );
     }
@@ -165,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setTestAds() {
-        List<String> testDeviceIds = Arrays.asList("20D91EB201806F1C7EA6457155F468D8", "62AEE42886038F87608F7F6F5D0B41BA");     // Test ads TODO: remove in prod
+        List<String> testDeviceIds = Arrays.asList("20D91EB201806F1C7EA6457155F468D8", "62AEE42886038F87608F7F6F5D0B41BA");
         RequestConfiguration configuration =
               new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build(); // Test ads
         MobileAds.setRequestConfiguration(configuration);                                   // Test ads
@@ -193,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == 1) {
-                    disableButtons(true);
                     refreshStats();
                 }
             });
@@ -201,14 +165,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onStartNewGameButtonClicked(View view) {
-        disableButtons(false);
         Intent intent = new Intent(this, GameDifficultyActivity.class);
         NewGameActivityResultLauncher.launch(intent);
     }
 
 
     public void onViewStatsButtonClicked(View view) {
-        disableButtons(false);
         Intent intent = new Intent(this, StatsActivity.class);
         NewGameActivityResultLauncher.launch(intent);
     }

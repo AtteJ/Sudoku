@@ -16,12 +16,6 @@ public class CheckSolution {
     }
 
 
-    public static boolean checkSolution(Board board) {
-        int[][] grid = board.getGameCells();
-        return checkSolution(grid);
-    }
-
-
     private static boolean solveSudoku(int[][] grid) {
         int row = 0;
         int col = 0;
@@ -137,7 +131,7 @@ public class CheckSolution {
         int colStart = col - col % 3;
         for (int i = 0; i < 3; i++)
         {
-            System.arraycopy(grid[i + rowStart], 0 + colStart, subGrid[i], 0, 3);
+            System.arraycopy(grid[i + rowStart], colStart, subGrid[i], 0, 3);
         }
         return subGrid;
     }

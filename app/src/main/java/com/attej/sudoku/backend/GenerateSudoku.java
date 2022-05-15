@@ -6,9 +6,9 @@ import static com.attej.sudoku.backend.CheckSolution.isValid;
 
 import java.util.Random;
 
-public class GenerateSudoku implements Runnable {
+public class GenerateSudoku {
     private final int givens;
-    private int[][] grid;
+
     public GenerateSudoku(int givens) {
         this.givens = givens;
     }
@@ -137,11 +137,6 @@ public class GenerateSudoku implements Runnable {
     }
 
 
-    public int[][] getGrid() {
-        return grid;
-    }
-
-
     public static int[][] copyGrid(int[][] grid) {
         int[][] copy = new int[9][9];
         for (int i = 0; i < 9; i++) {
@@ -150,9 +145,4 @@ public class GenerateSudoku implements Runnable {
         return copy;
     }
 
-
-    @Override
-    public void run() {
-        grid = generateSudoku(givens);
-    }
 }

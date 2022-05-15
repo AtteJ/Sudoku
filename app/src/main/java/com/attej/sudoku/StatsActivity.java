@@ -14,7 +14,6 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class StatsActivity extends AppCompatActivity {
     private Stats stats;
-    private FirebaseAnalytics mFireBaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

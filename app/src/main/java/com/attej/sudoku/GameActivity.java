@@ -2,18 +2,15 @@ package com.attej.sudoku;
 
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
@@ -25,16 +22,10 @@ import com.attej.sudoku.backend.CheckSolution;
 import com.attej.sudoku.backend.GameRecord;
 import com.attej.sudoku.backend.GenerateSudoku;
 import com.attej.sudoku.backend.Stats;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.RequestConfiguration;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GameActivity extends AppCompatActivity implements CellGroupFragment.OnFragmentInteractionListener {
@@ -48,9 +39,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private int difficulty = 1;
     private int mistakes = 0;
     private int hintsLeft = 1;
-
-    private static final String TAG = "cell";
-
 
     private int[] cellGroupFragments;
 
@@ -69,9 +57,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private int minutes;
 
     private Stats stats;
-
-    private AdView mAdView;
-    private FirebaseAnalytics mFirebaseAnalytics;
 
 
     @Override
@@ -102,7 +87,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
 
     private void setAnalytics() {
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(difficulty));
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "new game");
@@ -133,8 +118,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
 
     private void refreshCellSizes() {
-        for (int i = 0; i < cellGroupFragments.length; i++) {
-            ((CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragments[i])).setCellSize();
+        for (int cellGroupFragment : cellGroupFragments) {
+            ((CellGroupFragment) Objects.requireNonNull(getSupportFragmentManager().findFragmentById(cellGroupFragment))).setCellSize();
         }
     }
 
@@ -189,13 +174,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         findViewById(R.id.hint).setBackgroundColor(getResources().getColor(R.color.teal_700));
 
         setNumButtColors();
-    }
-
-
-    private void setRowHeight() {
-        for (int cellGroupFragment : cellGroupFragments) {
-            ((CellGroupFragment) getSupportFragmentManager().findFragmentById(cellGroupFragment)).setRowHeight();
-        }
     }
 
 

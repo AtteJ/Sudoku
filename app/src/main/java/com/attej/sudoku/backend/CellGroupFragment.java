@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment;
 
 import com.attej.sudoku.R;
 
+import java.util.Objects;
+
 public class CellGroupFragment extends Fragment {
     private int groupId;
     private OnFragmentInteractionListener mListener;
@@ -61,22 +63,6 @@ public class CellGroupFragment extends Fragment {
     }
 
 
-    public void setRowHeight() {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = displayMetrics.widthPixels;
-
-        TableRow row = view.findViewById(R.id.row1);
-        row.setMinimumHeight(width / 15);
-
-        row = view.findViewById(R.id.row2);
-        row.setMinimumHeight(width / 15);
-
-        row = view.findViewById(R.id.row3);
-        row.setMinimumHeight(width / 15);
-    }
-
-
     public void setValue(int position, int value, boolean startingCell) {
         cells = new int[]{R.id.cell1, R.id.cell2, R.id.cell3, R.id.cell4,
                 R.id.cell5, R.id.cell6, R.id.cell7, R.id.cell8, R.id.cell9};
@@ -88,7 +74,7 @@ public class CellGroupFragment extends Fragment {
 
     public void setCellSize() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((Activity) getContext()).getWindowManager()
+        ((Activity) Objects.requireNonNull(getContext())).getWindowManager()
                 .getDefaultDisplay()
                 .getMetrics(displayMetrics);
 
