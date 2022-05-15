@@ -38,9 +38,8 @@ public class GenerateSudoku {
     }
 
 
-    private static int[][] generateEmptyGrid() {
+    public static int[][] generateEmptyGrid() {
         return new int[][] { { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                             { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                              { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                              { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                              { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -79,7 +78,7 @@ public class GenerateSudoku {
 
         for (int i = 0; i < 9; i++)
         {
-            int rand = RandNumber(1, 10);
+            int rand = randNumber(1, 10);
             for (int j = 0; j < 9; j++)
             {
                 if (numbers[j] == rand)
@@ -102,7 +101,7 @@ public class GenerateSudoku {
     }
 
 
-    private static int RandNumber(int min, int max) {
+    public static int randNumber(int min, int max) {
         Random rnd = new Random();
         int rand = rnd.nextInt(max);
         while(rand < min)
@@ -115,12 +114,12 @@ public class GenerateSudoku {
         int[][] copy = copyGrid(grid);
         for (int i = 0; i < n; i++)
         {
-            int row = RandNumber(0, 9);
-            int col = RandNumber(0, 9);
+            int row = randNumber(0, 9);
+            int col = randNumber(0, 9);
             while (copy[row][col] == 0)
             {
-                row = RandNumber(0, 9);
-                col = RandNumber(0, 9);
+                row = randNumber(0, 9);
+                col = randNumber(0, 9);
             }
 
             int backup = copy[row][col];
