@@ -177,11 +177,10 @@ public class StatsActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Are you sure?")
                 .setMessage("This is irreversible")
-                .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton("Clear stats", (dialog, whichButton) -> {
                     stats.clearStats();
                     refreshStats();
                 })
-                .setNegativeButton(android.R.string.no, null).show();
+                .setNegativeButton("Cancel", null).show();
     }
 }

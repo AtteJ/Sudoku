@@ -16,8 +16,10 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GameDifficultyActivity extends AppCompatActivity {
+    private int difficulty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +68,9 @@ public class GameDifficultyActivity extends AppCompatActivity {
     }
 
 
-    public void startGame(int difficulty) {
+    public void startGame(int givens) {
         Intent intent = new Intent(this, GameActivity.class);
+        intent.putExtra("givens", givens);
         intent.putExtra("difficulty", difficulty);
         NewGameActivityResultLauncher.launch(intent);
     }
@@ -76,14 +79,11 @@ public class GameDifficultyActivity extends AppCompatActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == 1) {
-                    disableButtons(false);
+                    int givens = drawGivens(difficulty);
+                    startGame(givens);
                 }
                 if (result.getResultCode() == 2) {
                     disableButtons(false);
-                    Intent intent = new Intent();
-                    intent.putExtra("Lost", 1);
-                    setResult(1, intent);
-                    finish();
                 }
             });
 
@@ -91,24 +91,28 @@ public class GameDifficultyActivity extends AppCompatActivity {
     public void onDifficultyButtonClicked(View view) {
         disableButtons(true);
 
-        int selectedDifficulty = Integer.parseInt((view).getTag().toString());
-        startGame(selectedDifficulty);
+        difficulty = Integer.parseInt((view).getTag().toString());
+        int givens = drawGivens(difficulty);
+        startGame(givens);
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == 1) {
-            disableButtons(false);
+    private int drawGivens(int difficulty) {
+        switch (difficulty) {
+            case 0: {
+                return ThreadLocalRandom.current().nextInt(38, 41);
+            }
+            case 1: {
+                return ThreadLocalRandom.current().nextInt(31, 34);
+            }
+            case 2: {
+                return ThreadLocalRandom.current().nextInt(25, 29);
+            }
+            case 3: {
+                return ThreadLocalRandom.current().nextInt(17, 24);
+            }
         }
-        if (resultCode == 2) {
-            disableButtons(false);
-            Intent intent = new Intent();
-            intent.putExtra("Lost", 1);
-            setResult(1, intent);
-            finish();
-        }
+        return 0;
     }
 
 

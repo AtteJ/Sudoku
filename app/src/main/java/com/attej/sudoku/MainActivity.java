@@ -7,6 +7,7 @@ import com.attej.sudoku.backend.Stats;
 
 import android.content.Intent;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             setAds();
         }
 
-        consentInformation.reset();  // TODO: remove in prod
+        // consentInformation.reset();  // TODO: remove in prod
         refreshStats();
     }
 
@@ -158,19 +159,30 @@ public class MainActivity extends AppCompatActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == 1) {
+                    enableButtons(true);
                     refreshStats();
                 }
             });
 
 
+    private void enableButtons(boolean enabled) {
+        Button newGame = findViewById(R.id.buttonStartNewGame);
+        Button stats = findViewById(R.id.buttonViewStats);
+
+        newGame.setEnabled(enabled);
+        stats.setEnabled(enabled);
+    }
+
 
     public void onStartNewGameButtonClicked(View view) {
+        enableButtons(false);
         Intent intent = new Intent(this, GameDifficultyActivity.class);
         NewGameActivityResultLauncher.launch(intent);
     }
 
 
     public void onViewStatsButtonClicked(View view) {
+        enableButtons(false);
         Intent intent = new Intent(this, StatsActivity.class);
         NewGameActivityResultLauncher.launch(intent);
     }

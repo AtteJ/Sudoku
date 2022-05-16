@@ -1,6 +1,9 @@
 package com.attej.sudoku;
 
 
+import static android.content.ContentValues.TAG;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
@@ -22,9 +26,21 @@ import com.attej.sudoku.backend.CheckSolution;
 import com.attej.sudoku.backend.GameRecord;
 import com.attej.sudoku.backend.GenerateSudoku;
 import com.attej.sudoku.backend.Stats;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.OnUserEarnedRewardListener;
+import com.google.android.gms.ads.RequestConfiguration;
+import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -53,10 +69,15 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private TextView hintsText;
 
     private long millisecondTime, startTime, timeBuff, updateTime = 0L ;
+    private int timeSeconds;
     private Handler handler;
     private int minutes;
 
     private Stats stats;
+
+    private RewardedAd mRewardedAd;
+    private final String TAG = "GameActivity";
+
 
 
     @Override
@@ -65,12 +86,14 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         setContentView(R.layout.activity_game);
 
         setAnalytics();
+        loadAd();
 
         stats = new Stats(getApplicationContext());
 
+        int givens = getIntent().getIntExtra("givens", 0);
         difficulty = getIntent().getIntExtra("difficulty", 0);
         createBoard();
-        createSudoku(difficulty);
+        createSudoku(givens);
         addGivens();
         setButtColors();
         refreshCellSizes();
@@ -96,8 +119,28 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     }
 
 
-    private void createSudoku(int difficulty) {
-        int givens = generateGivens(difficulty);
+    private void loadAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        RewardedAd.load(this, "ca-app-pub-6148517439938867/1368714923",
+                adRequest, new RewardedAdLoadCallback() {
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error.
+                        Log.d(TAG, loadAdError.getMessage());
+                        mRewardedAd = null;
+                    }
+
+                    @Override
+                    public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
+                        mRewardedAd = rewardedAd;
+                        Log.d(TAG, "Ad was loaded.");
+                    }
+                });
+    }
+
+
+    private void createSudoku(int givens) {
         solution = new Board(GenerateSudoku.getSolution());
         startBoard = new Board(GenerateSudoku.removeNumbers(solution.getGameCells(), 81- givens));
         currentBoard = new Board();
@@ -146,25 +189,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                 }
             }
         }
-    }
-
-
-    private int generateGivens(int difficulty) {
-        switch (difficulty) {
-            case 0: {
-                return ThreadLocalRandom.current().nextInt(36, 40);
-            }
-            case 1: {
-                return ThreadLocalRandom.current().nextInt(30, 35);
-            }
-            case 2: {
-                return ThreadLocalRandom.current().nextInt(25, 29);
-            }
-            case 3: {
-                return ThreadLocalRandom.current().nextInt(17, 24);
-            }
-        }
-        return 0;
     }
 
 
@@ -380,7 +404,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         new AlertDialog.Builder(this)
                 .setTitle("Quit")
                 .setMessage("Do you really want to quit? This will be counted as a loss.")
-                .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
                     GameRecord record = new GameRecord(-1, difficulty);
                     stats.addRecord(record);
@@ -558,15 +581,14 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
     public void gameWon() {
         stopTimer();
-        int seconds = (int) (updateTime / 1000);
+        // timeSeconds += (int) (updateTime / 1000);
 
-        minutes = seconds / 60;
-        seconds = seconds % 60;
-        String message = String.format(getString(R.string.game_won_message), minutes, seconds);
-        if (stats.getBestTime(difficulty) > (int) (updateTime / 1000) || stats.getBestTime(difficulty) == 0)
+        String message = String.format(getString(R.string.game_won_message), timeSeconds / 60, timeSeconds % 60);
+        if (stats.getBestTime(difficulty) > timeSeconds || stats.getBestTime(difficulty) == 0)
             message += " New Best Time!";
 
-        GameRecord record = new GameRecord((int)(updateTime / 1000), difficulty);
+        saveRecord(true);
+
         if (difficulty == 0)
             stats.addExperience(5);
         if (difficulty == 1)
@@ -575,20 +597,17 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
             stats.addExperience(15);
         if (difficulty == 3)
             stats.addExperience(25);
-        stats.addRecord(record);
-        stats.saveStats();
 
         new AlertDialog.Builder(this)
                 .setTitle("Game won!")
                 .setMessage(message)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton("New game?", (dialog, whichButton) -> {
+                .setPositiveButton("New game", (dialog, whichButton) -> {
                     Intent intent = new Intent();
                     intent.putExtra("Lost", 0);
                     setResult(1, intent);
                     finish();
                 })
-                .setNegativeButton("Go Home?", (dialog, which) -> {
+                .setNegativeButton("Choose Difficulty", (dialog, which) -> {
                     Intent intent = new Intent();
                     intent.putExtra("Lost", 1);
                     setResult(2, intent);
@@ -599,25 +618,98 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
     private void gameLost() {
         stopTimer();
-        GameRecord record = new GameRecord(-1, difficulty);
-        stats.addRecord(record);
-        stats.saveStats();
+
+        timeSeconds += (int) (updateTime / 1000);
+
         new AlertDialog.Builder(this)
                 .setTitle("Game Lost!")
                 .setMessage("Game Lost!")
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton("New game?", (dialog, whichButton) -> {
+                .setPositiveButton("Continue by watching an ad?", (dialog, whichButton) -> {
+                    getNewTry();
+                    startTimer();
+                    loadAd();
+                })
+                .setNegativeButton("New game?", (dialog, whichButton) -> {
+                    saveRecord(false);
                     Intent intent = new Intent();
                     intent.putExtra("Lost", 1);
                     setResult(1, intent);
                     finish();
-                })
-                .setNegativeButton("Go Home?", (dialog, which) -> {
-                    Intent intent = new Intent();
-                    intent.putExtra("Lost", 1);
-                    setResult(2, intent);
-                    finish();
                 }).setCancelable(false).show();
+    }
+
+
+    private void saveRecord(boolean won) {
+        GameRecord record;
+        if (won) {
+            record = new GameRecord(timeSeconds, difficulty);
+        }
+        else {
+            record = new GameRecord(-1, difficulty);
+        }
+        stats.addRecord(record);
+        stats.saveStats();
+    }
+
+
+    private void getNewTry() {
+        setTestAds();
+        showAd();
+        checkReward();
+    }
+
+
+    private void setTestAds() {
+        List<String> testDeviceIds = Arrays.asList("20D91EB201806F1C7EA6457155F468D8", "62AEE42886038F87608F7F6F5D0B41BA");
+        RequestConfiguration configuration =
+                new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build(); // Test ads
+        MobileAds.setRequestConfiguration(configuration);                                   // Test ads
+    }
+
+
+    private void showAd() {
+        if (mRewardedAd != null)
+            mRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                @Override
+                public void onAdShowedFullScreenContent() {
+                    // Called when ad is shown.
+                    Log.d(TAG, "Ad was shown.");
+                }
+
+                @Override
+                public void onAdFailedToShowFullScreenContent(AdError adError) {
+                    // Called when ad fails to show.
+                    Log.d(TAG, "Ad failed to show.");
+                    Toast.makeText(getApplicationContext(), "Ad failed to load", Toast.LENGTH_SHORT).show();
+                    mistakes--;
+                    updateCounters();
+                }
+
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    // Called when ad is dismissed.
+                    // Set the ad reference to null so you don't show the ad a second time.
+                    Log.d(TAG, "Ad was dismissed.");
+                    mRewardedAd = null;
+                    updateCounters();
+                }
+            });
+    }
+
+
+    private void checkReward() {
+        if (mRewardedAd != null) {
+            Activity activityContext = GameActivity.this;
+            mRewardedAd.show(activityContext, rewardItem -> {
+                // Handle the reward.
+                Log.d(TAG, "The user earned the reward.");
+                mistakes--;
+                updateCounters();
+            });
+        } else {
+            Log.d(TAG, "The rewarded ad wasn't ready yet.");
+            updateCounters();
+        }
     }
 
 
@@ -627,9 +719,13 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
             millisecondTime = SystemClock.uptimeMillis() - startTime;
             updateTime = timeBuff + millisecondTime;
 
-            int seconds = (int) (updateTime / 1000);
-            minutes = seconds / 60;
-            seconds = seconds % 60;
+            timeSeconds = (int) (updateTime / 1000);
+            minutes = timeSeconds / 60;
+            int seconds = timeSeconds % 60;
+
+            if (timeSeconds % 12 == 0 && mRewardedAd == null) {
+                loadAd();
+            }
 
             timer.setText(String.format(getString(R.string.timer), minutes, seconds));
             handler.postDelayed(this, 0);

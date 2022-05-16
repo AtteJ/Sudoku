@@ -12,5 +12,5 @@
     <color name="dark_gray">#6C6B6B</color>
     <color name="note">#4051ed</color>
     <color name="note_selected">#aebdd1</color>
-    <color name="del">#FC0349</color>
+    <color name="del">#DC023F</color>
 </resources>
