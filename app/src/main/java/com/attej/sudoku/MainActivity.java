@@ -146,6 +146,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+
+
     private void setExperience() {
         ExperienceBar bar = (ExperienceBar) getSupportFragmentManager().findFragmentById(R.id.experience);
         if (bar != null) {

@@ -91,6 +91,17 @@ public class Stats {
     }
 
 
+    public int getTotalPlaytime() {
+        int sum = 0;
+        for (int i = 0; i < records.size(); i++) {
+            if (records.get(i).getTimeSeconds() != -1) {
+                sum += records.get(i).getTimeSeconds();
+            }
+        }
+        return sum;
+    }
+
+
     public void addExperience(int xp) {
         experience += xp;
     }
