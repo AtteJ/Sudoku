@@ -3,49 +3,43 @@ package com.attej.sudoku.backend;
 import androidx.annotation.NonNull;
 
 public class Board {
-    private final int[][] gameCells = new int[9][9];
+    private int[][] solution = new int[9][9];
+    private int[][] startBoard = new int[9][9];
+    private final int[][] currentBoard = new int[9][9];
+    private final int[][][] notes = new int[9][9][9];
 
     public Board() {
 
     }
 
 
-    public Board(int[][] board) {
-        for (int i = 0; i < 9; i++)
-        {
-            for (int j = 0; j < 9; j++)
-            {
-                setValue(i, j, board[i][j]);
-            }
-        }
-    }
-
-
     public void setValue(int row, int column, int value) {
-        gameCells[row][column] = value;
+        currentBoard[row][column] = value;
     }
 
 
-    public int[][] getGameCells() {
-        return gameCells;
+    public void setNote(int row, int column, int value) {
+        notes[row][column][value-1] = 1;
     }
 
 
-    public void copyValues(int[][] newGameCells) {
-        for (int i = 0; i < newGameCells.length; i++) {
-            System.arraycopy(newGameCells[i], 0, gameCells[i], 0, newGameCells[i].length);
-        }
+    public int[][] getSolution() { return solution; }
+
+
+    public int getCorrectValue(int row, int column) { return solution[row][column]; }
+
+
+    public int getGiven(int row, int column) {
+        return startBoard[row][column];
     }
 
 
-    public int getValue(int row, int column) {
-        return gameCells[row][column];
-    }
+    public int[][] getCurrentBoard() { return currentBoard; }
 
 
     public boolean isNumberLeft(int number) {
         int sum = 0;
-        for (int[] gameCell : gameCells) {
+        for (int[] gameCell : currentBoard) {
             for (int i : gameCell) {
                 if (i == number)
                     sum++;
@@ -55,11 +49,45 @@ public class Board {
     }
 
 
+    public void addSolution(int[][] solution) {
+        this.solution = solution;
+    }
+
+
+    public void addStartBoard(int[][] startBoard) {
+        this.startBoard = startBoard;
+
+        for (int i = 0; i < startBoard.length; i++) {
+            System.arraycopy(startBoard[i], 0, currentBoard[i], 0, currentBoard[i].length);
+        }
+    }
+
+
+    public boolean checkAddedNumber(int num, int row, int column) {
+        return (checkNumber(row, column)) || num == 0;
+    }
+
+    private boolean checkNumber(int row, int column) {
+        return currentBoard[row][column] == solution[row][column];
+    }
+
+
+    public boolean checkBoard() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; i < 9; i++) {
+                if (solution[i][j] != currentBoard[i][j])
+                    return false;
+            }
+        }
+        return true;
+    }
+
+
     @NonNull
     @Override
     public String toString() {
         StringBuilder temp = new StringBuilder();
-        for (int[] gameCell : gameCells) {
+        for (int[] gameCell : currentBoard) {
             for (int j = 0; j < gameCell.length; j++) {
                 if (j == 0) {
                     temp.append("\n");

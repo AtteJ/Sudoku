@@ -1,8 +1,6 @@
 package com.attej.sudoku;
 
 
-import static android.content.ContentValues.TAG;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,9 +29,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.RequestConfiguration;
-import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -42,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class GameActivity extends AppCompatActivity implements CellGroupFragment.OnFragmentInteractionListener {
     private Cell clickedCell;
@@ -58,9 +53,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
     private int[] cellGroupFragments;
 
-    private Board startBoard;
-    private Board currentBoard;
-    private Board solution;
+    private Board board;
 
     private boolean note = false;
 
@@ -109,6 +102,26 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     }
 
 
+    @Override
+    public void onFragmentInteraction(int groupId, int cellId, View view) {
+        int row = ((groupId-1)/3)*3 + (cellId/3);
+        int column = ((groupId-1)%3)*3 + ((cellId)%3);
+        if(board.getGiven(row, column) != 0)
+            return;
+        if (clickedCell != null) {
+            previouslySelected = clickedCell;
+        }
+        clickedCell = (Cell) view;
+
+        clickedGroup = groupId;
+        clickedCellId = cellId;
+
+        Log.i("TAG", "Clicked group " + groupId + ", cell " + cellId);
+
+        selectCell();
+    }
+
+
     private void setAnalytics() {
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         Bundle bundle = new Bundle();
@@ -141,11 +154,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
 
     private void createSudoku(int givens) {
-        solution = new Board(GenerateSudoku.getSolution());
-        startBoard = new Board(GenerateSudoku.removeNumbers(solution.getGameCells(), 81- givens));
-        currentBoard = new Board();
-        currentBoard.copyValues(startBoard.getGameCells());
-
+        board = new Board();
+        board.addSolution(GenerateSudoku.getSolution());
+        board.addStartBoard(GenerateSudoku.removeNumbers(board.getSolution(), 81- givens));
     }
 
 
@@ -181,7 +192,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                 int groupRow = i % 3;
 
                 int groupPosition = (groupRow * 3) + groupColumn;
-                int currentValue = currentBoard.getValue(i, j);
+                int currentValue = board.getGiven(i, j);
 
                 if (currentValue != 0) {
                     if (tempCellGroupFragment != null)
@@ -221,7 +232,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         int previousNumber = clickedCell.getNumber();
 
         clickedCell.setNumber(num, false);
-        currentBoard.setValue(row, column, num);
+        board.setValue(row, column, num);
 
         updateNumberButtons();
 
@@ -234,73 +245,30 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
 
     private void checkAddedNumber(int num, int previousNumber) {
-        if ((!checkNumber()) && num != 0 && !CheckSolution.checkGrid(currentBoard)) {
-            if (num != previousNumber) {
-                mistakes++;
-                updateCounters();
-            }
+        if ((!board.checkAddedNumber(num, getSelectedRow(), getSelectedColumn())) && num != previousNumber) {
+            mistakes++;
+            updateCounters();
             if (!wrongCells.contains(clickedCell))
                 wrongCells.add(clickedCell);
         }
-        if(checkNumber())
+
+        if(board.checkAddedNumber(num, getSelectedRow(), getSelectedColumn()))
             wrongCells.remove(clickedCell);
 
-        if (CheckSolution.checkGrid(currentBoard) && checkBoard())
+        if (CheckSolution.checkGrid(board) && board.checkBoard())
             gameWon();
-    }
-
-
-    private boolean checkNumber() {
-        int row = ((clickedGroup - 1) / 3) * 3 + (clickedCellId / 3);
-        int column = ((clickedGroup - 1) % 3) * 3 + ((clickedCellId) % 3);
-        return clickedCell.getNumber() == solution.getGameCells()[row][column];
-    }
-
-
-    private boolean checkNumber(int row, int col) {
-        return currentBoard.getGameCells()[row][col] == solution.getGameCells()[row][col];
-    }
-
-
-    private boolean checkBoard() {
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; i < 9; i++) {
-                if (!checkNumber(i, j))
-                    return false;
-            }
-        }
-        return true;
     }
 
 
     public void setNote(int num) {
         clickedCell.setNote(num);
-    }
-
-
-    @Override
-    public void onFragmentInteraction(int groupId, int cellId, View view) {
-        if(((Cell) view).isStartingCell())
-            return;
-        if (clickedCell != null) {
-            previouslySelected = clickedCell;
-        }
-        clickedCell = (Cell) view;
-
-        clickedGroup = groupId;
-        clickedCellId = cellId;
-
-        Log.i("TAG", "Clicked group " + groupId + ", cell " + cellId);
-
-        if (!isStartPiece(groupId, cellId)) {
-           selectCell();
-        }
+        board.setNote(getSelectedRow(), getSelectedColumn(), num);
     }
 
 
     private void updateNumberButtons() {
         for (int i = 1; i < 10; i++) {
-            if (currentBoard.isNumberLeft(i) || note)
+            if (board.isNumberLeft(i) || note)
                 addNumberButton(i);
             else
                 removeNumberButton(i);
@@ -387,8 +355,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         if (clickedCell == null || clickedCell.getNumber() != 0)
             Toast.makeText(getApplicationContext(), "First select unfilled cell", Toast.LENGTH_SHORT).show();
         else if (hintsLeft > 0) {
-            clickedCell.setNumber(solution.getValue(getSelectedRow(), getSelectedColumn()), true);
-            currentBoard.setValue(getSelectedRow(), getSelectedColumn(), clickedCell.getNumber());
+            clickedCell.setNumber(board.getCorrectValue(getSelectedRow(), getSelectedColumn()), true);
+            board.setValue(getSelectedRow(), getSelectedColumn(), clickedCell.getNumber());
             hintsLeft--;
             updateNumberButtons();
             removeMatchingNotes(clickedCell.getNumber());
@@ -533,13 +501,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     }
 
 
-    private boolean isStartPiece(int group, int cell) {
-        int row = ((group-1)/3)*3 + (cell/3);
-        int column = ((group-1)%3)*3 + ((cell)%3);
-        return startBoard.getValue(row, column) != 0;
-    }
-
-
     private void refreshCellColors() {
         if (previouslySelected != null)
             previouslySelected.setBackground(ResourcesCompat.getDrawable(getApplicationContext().getResources(), R.drawable.table_border_cell, getApplicationContext().getTheme()));
@@ -677,7 +638,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                 }
 
                 @Override
-                public void onAdFailedToShowFullScreenContent(AdError adError) {
+                public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
                     // Called when ad fails to show.
                     Log.d(TAG, "Ad failed to show.");
                     Toast.makeText(getApplicationContext(), "Ad failed to load", Toast.LENGTH_SHORT).show();

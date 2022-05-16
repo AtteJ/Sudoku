@@ -95,7 +95,7 @@ public class CheckSolution {
      * @return true if completely filled, otherwise false
      */
     public static boolean checkGrid(Board board) {
-        int[][] grid = board.getGameCells();
+        int[][] grid = board.getCurrentBoard();
         for (int i = 0; i < 9; i++)
         {
             for (int j = 0; j < 9; j++)

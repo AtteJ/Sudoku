@@ -123,7 +123,4 @@ public class Cell extends TableLayout {
     }
 
 
-    public boolean isStartingCell() {
-        return startingCell;
-    }
 }

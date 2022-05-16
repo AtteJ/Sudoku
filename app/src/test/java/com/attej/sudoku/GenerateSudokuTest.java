@@ -9,9 +9,9 @@ public class GenerateSudokuTest {
     @Test
     public void getSolution_test() {
         int[][] grid = GenerateSudoku.getSolution();
-        for (int i = 0; i <  grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                assertNotEquals("Number should not be zero \n" + gridToString(grid), grid[i][j], 0);
+        for (int[] ints : grid) {
+            for (int anInt : ints) {
+                assertNotEquals("Number should not be zero \n" + gridToString(grid), anInt, 0);
             }
         }
     }
@@ -20,9 +20,9 @@ public class GenerateSudokuTest {
     @Test
     public void generateEmptyGrid_test() {
         int[][] grid = GenerateSudoku.generateEmptyGrid();
-        for (int i = 0; i <  grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                assertEquals(grid[i][j], 0);
+        for (int[] ints : grid) {
+            for (int anInt : ints) {
+                assertEquals(anInt, 0);
             }
         }
     }
@@ -39,9 +39,9 @@ public class GenerateSudokuTest {
 
     private String gridToString(int[][] grid) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                sb.append(grid[i][j] + " ");
+        for (int[] ints : grid) {
+            for (int anInt : ints) {
+                sb.append(anInt).append(" ");
             }
             sb.append("\n");
         }
