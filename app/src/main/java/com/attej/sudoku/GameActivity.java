@@ -64,13 +64,12 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private long millisecondTime, startTime, timeBuff, updateTime = 0L ;
     private int timeSeconds;
     private Handler handler;
-    private int minutes;
 
     private Stats stats;
 
     private RewardedAd mRewardedAd;
     private final String TAG = "GameActivity";
-
+    FirebaseAnalytics mFirebaseAnalytics;
 
 
     @Override
@@ -123,11 +122,15 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
 
     private void setAnalytics() {
-        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+    }
+
+
+    private void recordEvent(String id, String message) {
         Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(difficulty));
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "new game");
-        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "new game");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, id);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, message);
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "game_activity");
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
@@ -142,12 +145,14 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                         // Handle the error.
                         Log.d(TAG, loadAdError.getMessage());
                         mRewardedAd = null;
+                        recordEvent("ad_loaded_fail", "Ad failed to load");
                     }
 
                     @Override
                     public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
                         mRewardedAd = rewardedAd;
                         Log.d(TAG, "Ad was loaded.");
+                        recordEvent("ad_loaded", "Ad was loaded");
                     }
                 });
     }
@@ -321,6 +326,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
 
     public void onNumButtClicked(View view) {
+        Log.d(((Button) view).getText().toString(), "Number button clicked");
         Button clicked = (Button) view;
         int num = Integer.parseInt(clicked.getTag().toString());
         if (clickedCell != null) {
@@ -330,6 +336,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
 
     public void onDelButtClicked(View view) {
+        Log.d(((Button) view).getText().toString(), "Delete button clicked");
         if (clickedCell != null && clickedCell.getNumber() != 0) {
             wrongCells.remove(clickedCell);
             setCellNum(0);
@@ -341,6 +348,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
 
     public void onNoteButtClicked(View view) {
+        Log.d(((Button) view).getText().toString(), "Note button clicked");
         note = !note;
         Button butt = view.findViewById(R.id.buttNote);
         updateNumberButtons();
@@ -352,6 +360,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
 
     public void onHintButtonClicked(View view) {
+        Log.d(((Button) view).getText().toString(), "Hint button clicked");
         if (clickedCell == null || clickedCell.getNumber() != 0)
             Toast.makeText(getApplicationContext(), "First select unfilled cell", Toast.LENGTH_SHORT).show();
         else if (hintsLeft > 0) {
@@ -369,6 +378,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
 
     public void onGoBackButtonClicked(View view) {
+        Log.d(((Button) view).getText().toString(), "Go back clicked");
         new AlertDialog.Builder(this)
                 .setTitle("Quit")
                 .setMessage("Do you really want to quit? This will be counted as a loss.")
@@ -676,11 +686,13 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
             mRewardedAd.show(activityContext, rewardItem -> {
                 // Handle the reward.
                 Log.d(TAG, "The user earned the reward.");
+                recordEvent("rewarded_ad_shown", "User watched rewarded ad");
                 mistakes--;
                 updateCounters();
             });
         } else {
             Log.d(TAG, "The rewarded ad wasn't ready yet.");
+            recordEvent("reward_ad_failed", "Failed to load rewarded ad");
             updateCounters();
         }
     }
@@ -693,7 +705,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
             updateTime = timeBuff + millisecondTime;
 
             timeSeconds = (int) (updateTime / 1000);
-            minutes = timeSeconds / 60;
+            int minutes = timeSeconds / 60;
             int seconds = timeSeconds % 60;
 
             if (timeSeconds % 12 == 0 && mRewardedAd == null) {

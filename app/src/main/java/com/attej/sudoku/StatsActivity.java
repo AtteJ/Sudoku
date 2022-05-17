@@ -2,7 +2,9 @@ package com.attej.sudoku;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -14,6 +16,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class StatsActivity extends AppCompatActivity {
     private Stats stats;
+    FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,11 +24,19 @@ public class StatsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_stats);
 
         // Obtain the FirebaseAnalytics instance.
-        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         stats = new Stats(getApplicationContext());
 
         refreshStats();
+    }
+
+    private void recordEvent(String id, String message) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, id);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, message);
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "main");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
 
@@ -166,6 +177,7 @@ public class StatsActivity extends AppCompatActivity {
 
 
     public void onGoBackButtonClicked(View view) {
+        Log.d(((Button) view).getText().toString(), "Go back clicked");
         Intent intent = new Intent();
         intent.putExtra("Lost", 1);
         setResult(1, intent);
@@ -174,12 +186,14 @@ public class StatsActivity extends AppCompatActivity {
 
 
     public void onClearStatsClicked(View view) {
+        Log.d(((Button) view).getText().toString(), "Clear stats clicked");
         new AlertDialog.Builder(this)
                 .setTitle("Are you sure?")
                 .setMessage("This is irreversible")
                 .setPositiveButton("Clear stats", (dialog, whichButton) -> {
                     stats.clearStats();
                     refreshStats();
+                    recordEvent("stats_cleared", "Stats cleared");
                 })
                 .setNegativeButton("Cancel", null).show();
     }

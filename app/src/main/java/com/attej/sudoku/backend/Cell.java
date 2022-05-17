@@ -16,7 +16,6 @@ public class Cell extends TableLayout {
     private final TextView[] notes = new TextView[9];
     private int num = 0;
     private boolean note = false;
-    private boolean startingCell;
 
     public Cell(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -64,7 +63,6 @@ public class Cell extends TableLayout {
 
 
     public void setNumber(int num, boolean startingCell) {
-        this.startingCell = startingCell;
         if (note) {
             note = false;
         }

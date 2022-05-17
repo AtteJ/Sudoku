@@ -6,6 +6,7 @@ import com.attej.sudoku.backend.ExperienceBar;
 import com.attej.sudoku.backend.Stats;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private AdView mAdView;
     private ConsentInformation consentInformation;
     private ConsentForm consentForm;
+    FirebaseAnalytics mFirebaseAnalytics;
 
 
     @Override
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         setConsentForm();
         if (consentInformation.getConsentStatus() == ConsentInformation.ConsentStatus.NOT_REQUIRED) {
+            recordEvent("consent_not_required", "Consent not required");
             setAnalytics();
             setTestAds();
             setAds();
@@ -94,10 +97,13 @@ public class MainActivity extends AppCompatActivity {
                                 });
                     }
                     if (consentInformation.getConsentStatus() == ConsentInformation.ConsentStatus.OBTAINED) {
+                        Log.d(this.consentForm.toString(), "Consent obtained");
                         System.out.println("Consent succeeded");
                         setAnalytics();
                         setTestAds();
                         setAds();
+                        Bundle bundle = new Bundle();
+                        recordEvent("consent_obtained", "Consent obtained");
                     }
 
                 },
@@ -108,14 +114,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void setAnalytics() {
-        // Obtain the FirebaseAnalytics instance.
-        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+    private void recordEvent(String id, String message) {
         Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "Game opened");
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Main");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, id);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, message);
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "main");
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+    }
+
+
+    private void setAnalytics() {
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 
 
@@ -146,9 +156,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
-
     private void setExperience() {
         ExperienceBar bar = (ExperienceBar) getSupportFragmentManager().findFragmentById(R.id.experience);
         if (bar != null) {
@@ -176,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onStartNewGameButtonClicked(View view) {
+        Log.d(((Button) view).getText().toString(), "New game button clicked");
         enableButtons(false);
         Intent intent = new Intent(this, GameDifficultyActivity.class);
         NewGameActivityResultLauncher.launch(intent);
@@ -183,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onViewStatsButtonClicked(View view) {
+        Log.d(((Button) view).getText().toString(), "View stats button clicked");
         enableButtons(false);
         Intent intent = new Intent(this, StatsActivity.class);
         NewGameActivityResultLauncher.launch(intent);

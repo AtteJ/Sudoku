@@ -7,25 +7,6 @@ import static com.attej.sudoku.backend.CheckSolution.isValid;
 import java.util.Random;
 
 public class GenerateSudoku {
-    private final int givens;
-
-    public GenerateSudoku(int givens) {
-        this.givens = givens;
-    }
-
-
-    /**
-     * Generates a sudoku with given amount of givens. Has only one possible solution
-     * @param givens how many numbers are already filled in sudoku
-     */
-    public static int[][] generateSudoku(int givens) {
-        int[][] grid = generateEmptyGrid();
-        while (!checkGrid(grid))
-        {
-            grid = fillGrid(generateEmptyGrid());
-        }
-        return removeNumbers(grid, 81-givens);
-    }
 
 
     public static int[][] getSolution() {

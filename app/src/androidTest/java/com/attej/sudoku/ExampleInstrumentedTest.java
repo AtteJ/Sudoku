@@ -10,6 +10,9 @@ import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
+import com.attej.sudoku.backend.Board;
+import com.attej.sudoku.backend.GenerateSudoku;
+
 /**
  * Instrumented test, which will execute on an Android device.
  *
@@ -22,5 +25,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         assertEquals("com.attej.sudoku", appContext.getPackageName());
+        System.out.println((new Board()).addSolution(GenerateSudoku.getSolution()).toString());
     }
 }

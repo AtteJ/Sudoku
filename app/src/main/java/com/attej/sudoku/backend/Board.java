@@ -49,8 +49,9 @@ public class Board {
     }
 
 
-    public void addSolution(int[][] solution) {
+    public Board addSolution(int[][] solution) {
         this.solution = solution;
+        return this;
     }
 
 

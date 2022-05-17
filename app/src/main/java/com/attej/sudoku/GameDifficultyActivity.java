@@ -2,7 +2,9 @@ package com.attej.sudoku;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -23,10 +25,12 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GameDifficultyActivity extends AppCompatActivity {
     private int difficulty;
+    FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +40,15 @@ public class GameDifficultyActivity extends AppCompatActivity {
         disableButtons(false);
 
         Stats stats = new Stats(this);
-        if (stats.getTotalPlaytime() > 900)
-            askReview();
 
         setTestAds();
         setAds();
         setAnalytics();
+
+        if (stats.getTotalPlaytime() > 900) {
+            recordEvent("asked_review", "Asked review");
+            askReview();
+        }
    }
 
 
@@ -60,7 +67,9 @@ public class GameDifficultyActivity extends AppCompatActivity {
                 });
             } else {
                 // There was some problem, log or handle the error code.
-                @ReviewErrorCode int reviewErrorCode = ((ReviewException) task.getException()).getErrorCode();
+                @ReviewErrorCode int reviewErrorCode = ((ReviewException) Objects.requireNonNull(task.getException())).getErrorCode();
+                Log.d(String.valueOf(reviewErrorCode), "Error fetching review form");
+                recordEvent("failed_review_form", "Failed showing review form: " + reviewErrorCode);
             }
         });
     }
@@ -68,10 +77,13 @@ public class GameDifficultyActivity extends AppCompatActivity {
 
    private void setAnalytics() {
        // Obtain the FirebaseAnalytics instance.
-       FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+       mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+   }
+
+   private void recordEvent(String id, String message) {
        Bundle bundle = new Bundle();
-       bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "Difficulty screen");
-       bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "difficulty");
+       bundle.putString(FirebaseAnalytics.Param.ITEM_ID, id);
+       bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, message);
        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "difficulty");
        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
    }
@@ -119,6 +131,7 @@ public class GameDifficultyActivity extends AppCompatActivity {
 
 
     public void onDifficultyButtonClicked(View view) {
+        Log.d(((Button) view).getText().toString(), "Difficulty button clicked");
         disableButtons(true);
 
         difficulty = Integer.parseInt((view).getTag().toString());
@@ -147,6 +160,7 @@ public class GameDifficultyActivity extends AppCompatActivity {
 
 
     public void onGoBackButtonClicked(View view) {
+        Log.d(((Button) view).getText().toString(), "Go back button clicked");
         Intent intent = new Intent();
         intent.putExtra("Lost", 1);
         setResult(1, intent);
