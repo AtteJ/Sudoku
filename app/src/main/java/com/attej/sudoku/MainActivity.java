@@ -161,10 +161,8 @@ public class MainActivity extends AppCompatActivity {
     final ActivityResultLauncher<Intent> NewGameActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == 1) {
-                    enableButtons(true);
-                    refreshStats();
-                }
+                enableButtons(true);
+                refreshStats();
             });
 
 

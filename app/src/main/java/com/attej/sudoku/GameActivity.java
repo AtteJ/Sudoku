@@ -377,13 +377,25 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                     stats.addRecord(record);
                     stats.saveStats();
 
-                    Intent intent = new Intent();
-                    intent.putExtra("Lost", 1);
-                    setResult(1, intent);
-
                     finish();
                 })
                 .setNegativeButton(android.R.string.no, null).show();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("Quit")
+                .setMessage("Do you really want to quit? This will be counted as a loss.")
+                .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                    GameRecord record = new GameRecord(-1, difficulty);
+                    stats.addRecord(record);
+                    stats.saveStats();
+
+                    finish();
+                })
+                .setNegativeButton("Cancel", null).show();
     }
 
 

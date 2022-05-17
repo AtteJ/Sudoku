@@ -110,12 +110,10 @@ public class GameDifficultyActivity extends AppCompatActivity {
     final ActivityResultLauncher<Intent> NewGameActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
+                disableButtons(false);
                 if (result.getResultCode() == 1) {
                     int givens = drawGivens(difficulty);
                     startGame(givens);
-                }
-                if (result.getResultCode() == 2) {
-                    disableButtons(false);
                 }
             });
 
