@@ -46,7 +46,7 @@ public class GameDifficultyActivity extends AppCompatActivity {
         setAnalytics();
 
         if (stats.getTotalPlaytime() > 900) {
-            recordEvent("asked_review", "Asked review");
+            recordEvent("asked_review", "asked_review", "Asked review");
             askReview();
         }
    }
@@ -69,7 +69,7 @@ public class GameDifficultyActivity extends AppCompatActivity {
                 // There was some problem, log or handle the error code.
                 @ReviewErrorCode int reviewErrorCode = ((ReviewException) Objects.requireNonNull(task.getException())).getErrorCode();
                 Log.d(String.valueOf(reviewErrorCode), "Error fetching review form");
-                recordEvent("failed_review_form", "Failed showing review form: " + reviewErrorCode);
+                recordEvent("failed_review_form", "failed_review_form", "Failed showing review form: " + reviewErrorCode);
             }
         });
     }
@@ -80,12 +80,12 @@ public class GameDifficultyActivity extends AppCompatActivity {
        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
    }
 
-   private void recordEvent(String id, String message) {
+   private void recordEvent(String event, String id, String message) {
        Bundle bundle = new Bundle();
        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, id);
        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, message);
        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "difficulty");
-       mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+       mFirebaseAnalytics.logEvent(event, bundle);
    }
 
 

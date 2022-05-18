@@ -31,12 +31,12 @@ public class StatsActivity extends AppCompatActivity {
         refreshStats();
     }
 
-    private void recordEvent(String id, String message) {
+    private void recordEvent(String event, String id, String message) {
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, id);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, message);
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "main");
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+        mFirebaseAnalytics.logEvent(event, bundle);
     }
 
 
@@ -193,7 +193,7 @@ public class StatsActivity extends AppCompatActivity {
                 .setPositiveButton("Clear stats", (dialog, whichButton) -> {
                     stats.clearStats();
                     refreshStats();
-                    recordEvent("stats_cleared", "Stats cleared");
+                    recordEvent("stats_cleared", "stats_cleared", "Stats cleared");
                 })
                 .setNegativeButton("Cancel", null).show();
     }

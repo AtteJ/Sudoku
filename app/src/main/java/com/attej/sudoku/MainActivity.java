@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         setConsentForm();
         if (consentInformation.getConsentStatus() == ConsentInformation.ConsentStatus.NOT_REQUIRED) {
-            recordEvent("consent_not_required", "Consent not required");
+            recordEvent("consent_not_required", "consent_not_required", "Consent not required");
             setAnalytics();
             setTestAds();
             setAds();
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                         setTestAds();
                         setAds();
                         Bundle bundle = new Bundle();
-                        recordEvent("consent_obtained", "Consent obtained");
+                        recordEvent("consent_obtained", "consent_obtained", "Consent obtained");
                     }
 
                 },
@@ -114,12 +114,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void recordEvent(String id, String message) {
+    private void recordEvent(String event, String id, String message) {
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, id);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, message);
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "main");
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+        mFirebaseAnalytics.logEvent(event, bundle);
     }
 
 

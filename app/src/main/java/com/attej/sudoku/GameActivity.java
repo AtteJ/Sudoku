@@ -126,12 +126,12 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     }
 
 
-    private void recordEvent(String id, String message) {
+    private void recordEvent(String event, String id, String message) {
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, id);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, message);
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "game_activity");
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+        mFirebaseAnalytics.logEvent(event, bundle);
     }
 
 
@@ -145,14 +145,14 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                         // Handle the error.
                         Log.d(TAG, loadAdError.getMessage());
                         mRewardedAd = null;
-                        recordEvent("ad_loaded_fail", "Ad failed to load");
+                        recordEvent("ad_loaded_fail", "ad_loaded_fail", "Ad failed to load");
                     }
 
                     @Override
                     public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
                         mRewardedAd = rewardedAd;
                         Log.d(TAG, "Ad was loaded.");
-                        recordEvent("ad_loaded", "Ad was loaded");
+                        recordEvent("ad_loaded", "ad_loaded", "Ad was loaded");
                     }
                 });
     }
@@ -686,13 +686,13 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
             mRewardedAd.show(activityContext, rewardItem -> {
                 // Handle the reward.
                 Log.d(TAG, "The user earned the reward.");
-                recordEvent("rewarded_ad_shown", "User watched rewarded ad");
+                recordEvent("rewarded_ad_shown", "rewarded_ad_shown", "User watched rewarded ad");
                 mistakes--;
                 updateCounters();
             });
         } else {
             Log.d(TAG, "The rewarded ad wasn't ready yet.");
-            recordEvent("reward_ad_failed", "Failed to load rewarded ad");
+            recordEvent("reward_ad_failed", "reward_ad_failed", "Failed to load rewarded ad");
             updateCounters();
         }
     }
