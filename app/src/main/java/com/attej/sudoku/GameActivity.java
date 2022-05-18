@@ -32,6 +32,7 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+import com.google.android.gms.games.PlayGames;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
@@ -78,7 +79,19 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         setContentView(R.layout.activity_game);
 
         setAnalytics();
-        loadAd();
+
+        final Handler adHandler = new Handler();
+        final int delay = 5000;
+
+        adHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mRewardedAd == null)
+                    loadAd();
+                adHandler.postDelayed(this, delay);
+            }
+        }, delay);
+
 
         stats = new Stats(getApplicationContext());
 
@@ -295,6 +308,14 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
         numButts[num - 1].setVisibility(View.VISIBLE);
         numButts[num - 1].setEnabled(true);
+    }
+
+
+    private void enableNumButts(boolean enabled) {
+        Button[] butts = getNumButts();
+        for (Button butt : butts) {
+            butt.setEnabled(enabled);
+        }
     }
 
 
@@ -570,7 +591,10 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         if (stats.getBestTime(difficulty) > timeSeconds || stats.getBestTime(difficulty) == 0)
             message += " New Best Time!";
 
+        stats.addPlaytime(timeSeconds);
         saveRecord(true);
+
+        incrementAchievements();
 
         if (difficulty == 0)
             stats.addExperience(5);
@@ -599,8 +623,32 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     }
 
 
+    private void incrementAchievements() {
+        stats.refreshAchievements(this);
+        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_10_games), 1);
+        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_50_games), 1);
+        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_100_games), 1);
+        if (difficulty == 2) {
+            PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_10_hard_games), 1);
+            PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_50_hard_games), 1);
+            PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_100_hard_games), 1);
+        }
+        if (difficulty == 3) {
+            PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_10_extreme_games), 1);
+            PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_50_extreme_games), 1);
+            PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_100_extreme_games), 1);
+        }
+        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_total_playtime_of_one_hour), timeSeconds);
+        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_total_playtime_of_10_hours), timeSeconds);
+        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_total_playtime_of_100_hours), timeSeconds);
+
+    }
+
+
     private void gameLost() {
         stopTimer();
+        enableNumButts(false);
+        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_lose_10_games), 1);
 
         timeSeconds += (int) (updateTime / 1000);
 
@@ -610,10 +658,12 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                 .setPositiveButton("Continue by watching an ad?", (dialog, whichButton) -> {
                     getNewTry();
                     startTimer();
+                    enableNumButts(true);
                     loadAd();
                 })
                 .setNegativeButton("New game?", (dialog, whichButton) -> {
                     saveRecord(false);
+                    stats.addPlaytime(timeSeconds);
                     Intent intent = new Intent();
                     intent.putExtra("Lost", 1);
                     setResult(1, intent);
@@ -626,6 +676,22 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         GameRecord record;
         if (won) {
             record = new GameRecord(timeSeconds, difficulty);
+
+            int bestTime = stats.getBestTime(difficulty);
+            if (bestTime > timeSeconds || bestTime == 0) {
+                if (difficulty == 0) {
+                    PlayGames.getLeaderboardsClient(this).submitScore(getString(R.string.leaderboard_easy), timeSeconds);
+                }
+                if (difficulty == 1) {
+                    PlayGames.getLeaderboardsClient(this).submitScore(getString(R.string.leaderboard_normal), timeSeconds);
+                }
+                if (difficulty == 2) {
+                    PlayGames.getLeaderboardsClient(this).submitScore(getString(R.string.leaderboard_hard), timeSeconds);
+                }
+                if (difficulty == 3) {
+                    PlayGames.getLeaderboardsClient(this).submitScore(getString(R.string.leaderboard_extreme), timeSeconds);
+                }
+            }
         }
         else {
             record = new GameRecord(-1, difficulty);
@@ -677,6 +743,11 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                     updateCounters();
                 }
             });
+        else {
+            Toast.makeText(getApplicationContext(), "Ad failed to load", Toast.LENGTH_SHORT).show();
+            mistakes--;
+            updateCounters();
+        }
     }
 
 
@@ -707,10 +778,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
             timeSeconds = (int) (updateTime / 1000);
             int minutes = timeSeconds / 60;
             int seconds = timeSeconds % 60;
-
-            if (timeSeconds % 12 == 0 && mRewardedAd == null) {
-                loadAd();
-            }
 
             timer.setText(String.format(getString(R.string.timer), minutes, seconds));
             handler.postDelayed(this, 0);

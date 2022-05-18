@@ -15,6 +15,9 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-6148517439938867~8769048012"/>
+        <meta-data android:name="com.google.android.gms.games.APP_ID"
+            android:value="@string/game_services_project_id"/>
+
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
@@ -33,6 +36,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".StatsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LeaderboardActivity"
             android:screenOrientation="portrait" />
     </application>
 

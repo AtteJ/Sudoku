@@ -15,6 +15,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
+import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.tasks.Task;
 import com.google.android.play.core.review.ReviewException;
 import com.google.android.play.core.review.ReviewInfo;
@@ -31,6 +32,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GameDifficultyActivity extends AppCompatActivity {
     private int difficulty;
     FirebaseAnalytics mFirebaseAnalytics;
+    Stats stats;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +41,8 @@ public class GameDifficultyActivity extends AppCompatActivity {
 
         disableButtons(false);
 
-        Stats stats = new Stats(this);
+        stats = new Stats(this);
+        checkAchievements();
 
         setTestAds();
         setAds();
@@ -49,7 +52,17 @@ public class GameDifficultyActivity extends AppCompatActivity {
             recordEvent("asked_review", "asked_review", "Asked review");
             askReview();
         }
-   }
+    }
+
+
+    private void checkAchievements() {
+        if (stats.getTotalPlaytime() >= 3600)
+            PlayGames.getAchievementsClient(this).unlock(getString(R.string.achievement_total_playtime_of_one_hour));
+        if (stats.getTotalPlaytime() >= 36000)
+            PlayGames.getAchievementsClient(this).unlock(getString(R.string.achievement_total_playtime_of_10_hours));
+        if (stats.getTotalPlaytime() >= 360000)
+            PlayGames.getAchievementsClient(this).unlock(getString(R.string.achievement_total_playtime_of_100_hours));
+    }
 
 
     private void askReview() {
@@ -123,6 +136,7 @@ public class GameDifficultyActivity extends AppCompatActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 disableButtons(false);
+                checkAchievements();
                 if (result.getResultCode() == 1) {
                     int givens = drawGivens(difficulty);
                     startGame(givens);

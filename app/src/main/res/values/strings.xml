@@ -4,12 +4,16 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
 
-    <string name="banner_ad_unit_id_main">ca-app-pub-6148517439938867/3386813107</string>
-    <string name="banner_ad_unit_id_difficulty">ca-app-pub-6148517439938867/6830114532</string>
-    <string name="banner_ad_unit_id_game">ca-app-pub-6148517439938867/2801625214</string>
+    <string translatable="false" name="banner_ad_unit_id_main">ca-app-pub-6148517439938867/3386813107</string>
+    <string translatable="false" name="banner_ad_unit_id_difficulty">ca-app-pub-6148517439938867/6830114532</string>
+    <string translatable="false" name="banner_ad_unit_id_game">ca-app-pub-6148517439938867/2801625214</string>
+
+    <string translatable="false" name="game_services_project_id">833068304386</string>
 
     <string name="new_game">New Game</string>
     <string name="stats">Stats</string>
+    <string name="leaderboard">Leaderboards</string>
+    <string name="signin">Sign in</string>
     <string name="go_back">Go Back</string>
 
     <string name="game_stats">Game Stats</string>
@@ -51,4 +55,46 @@
     <string name="butt_hint">Hint</string>
 
     <string name="cell_description">Subgrid %1$d, cell %2$d, filled number: %3$d</string>
+
+
+    <!-- Google Play Games Resources -->
+    <string name="achievement_first_win" translatable="false">CgkIgpD2tZ8YEAIQBQ</string>
+    <!--achievement Win 10 games-->
+    <string name="achievement_win_10_games" translatable="false">CgkIgpD2tZ8YEAIQBg</string>
+    <!--achievement Win 50 games-->
+    <string name="achievement_win_50_games" translatable="false">CgkIgpD2tZ8YEAIQBw</string>
+    <!--achievement Win 100 games-->
+    <string name="achievement_win_100_games" translatable="false">CgkIgpD2tZ8YEAIQCA</string>
+    <!--achievement Win a hard game-->
+    <string name="achievement_win_a_hard_game" translatable="false">CgkIgpD2tZ8YEAIQCQ</string>
+    <!--achievement Win 10 hard games-->
+    <string name="achievement_win_10_hard_games" translatable="false">CgkIgpD2tZ8YEAIQDw</string>
+    <!--achievement Win 50 hard games-->
+    <string name="achievement_win_50_hard_games" translatable="false">CgkIgpD2tZ8YEAIQEA</string>
+    <!--achievement Win 100 hard games-->
+    <string name="achievement_win_100_hard_games" translatable="false">CgkIgpD2tZ8YEAIQEQ</string>
+    <!--achievement Win an extreme game-->
+    <string name="achievement_win_an_extreme_game" translatable="false">CgkIgpD2tZ8YEAIQCg</string>
+    <!--achievement Win 10 extreme games-->
+    <string name="achievement_win_10_extreme_games" translatable="false">CgkIgpD2tZ8YEAIQEg</string>
+    <!--achievement Win 50 extreme games-->
+    <string name="achievement_win_50_extreme_games" translatable="false">CgkIgpD2tZ8YEAIQEw</string>
+    <!--achievement Win 100 extreme games-->
+    <string name="achievement_win_100_extreme_games" translatable="false">CgkIgpD2tZ8YEAIQFA</string>
+    <!--achievement Total playtime of one hour-->
+    <string name="achievement_total_playtime_of_one_hour" translatable="false">CgkIgpD2tZ8YEAIQDA</string>
+    <!--achievement Total playtime of 10 hours-->
+    <string name="achievement_total_playtime_of_10_hours" translatable="false">CgkIgpD2tZ8YEAIQDQ</string>
+    <!--achievement Total playtime of 100 hours-->
+    <string name="achievement_total_playtime_of_100_hours" translatable="false">CgkIgpD2tZ8YEAIQDg</string>
+    <!--achievement Lose 10 games-->
+    <string name="achievement_lose_10_games" translatable="false">CgkIgpD2tZ8YEAIQCw</string>
+    <!--leaderboard Easy-->
+    <string name="leaderboard_easy" translatable="false">CgkIgpD2tZ8YEAIQAQ</string>
+    <!--leaderboard Normal-->
+    <string name="leaderboard_normal" translatable="false">CgkIgpD2tZ8YEAIQAg</string>
+    <!--leaderboard Hard-->
+    <string name="leaderboard_hard" translatable="false">CgkIgpD2tZ8YEAIQAw</string>
+    <!--leaderboard Extreme-->
+    <string name="leaderboard_extreme" translatable="false">CgkIgpD2tZ8YEAIQBA</string>
 </resources>

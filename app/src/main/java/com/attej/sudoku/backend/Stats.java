@@ -1,6 +1,10 @@
 package com.attej.sudoku.backend;
 
+import android.app.Activity;
 import android.content.Context;
+
+import com.attej.sudoku.R;
+import com.google.android.gms.games.PlayGames;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,6 +21,7 @@ public class Stats {
     private final String FILENAME = "game_stats.dat";
 
     private int experience = 0;
+    private int totalPlaytime = 0;
 
     public Stats(Context context) {
         this.context = context;
@@ -91,14 +96,24 @@ public class Stats {
     }
 
 
-    public int getTotalPlaytime() {
+    public int getTotalGamesWon() {
         int sum = 0;
         for (int i = 0; i < records.size(); i++) {
             if (records.get(i).getTimeSeconds() != -1) {
-                sum += records.get(i).getTimeSeconds();
+                sum++;
             }
         }
         return sum;
+    }
+
+
+    public void addPlaytime(int seconds) {
+        totalPlaytime += seconds;
+    }
+
+
+    public int getTotalPlaytime() {
+        return totalPlaytime;
     }
 
 
@@ -109,6 +124,13 @@ public class Stats {
 
     public int getExperience() {
         return experience;
+    }
+
+
+    public void refreshAchievements(Activity activity) {
+        if (getTotalGamesWon() == 1)
+            PlayGames.getAchievementsClient(activity).unlock(activity.getString(R.string.achievement_first_win));
+
     }
 
 
@@ -123,7 +145,8 @@ public class Stats {
         File file = new File(context.getFilesDir(), FILENAME);
         try {
             FileWriter writer = new FileWriter(file);
-            String data = experience + "\n";
+            String data = "stats|" + totalPlaytime + "|" + experience + "\n";
+            System.out.println(data);
             writer.write(data);
             for (int i = 0; i < records.size(); i++) {
                 data = records.get(i).getTimeSeconds() + "|" + records.get(i).getDifficulty() + "\n";
@@ -156,6 +179,15 @@ public class Stats {
                     if (record.length == 1) {
                         try {
                             experience = Integer.parseInt(record[0]);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else if (record[0].equals("stats")) {
+                        try {
+                            totalPlaytime = Integer.parseInt(record[1]);
+                            if (record.length == 3)
+                                experience = Integer.parseInt(record[2]);
                         } catch (NumberFormatException e) {
                             e.printStackTrace();
                         }

@@ -50,15 +50,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="75dp"
         android:onClick="onViewStatsButtonClicked"
         android:text="@string/stats"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/buttonLeaderboard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonStartNewGame" />
+
+    <Button
+        android:id="@+id/buttonLeaderboard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="75dp"
+        android:onClick="onLeaderboardButtonClicked"
+        android:text="@string/leaderboard"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonStartNewGame"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintTop_toBottomOf="@id/buttonViewStats" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"

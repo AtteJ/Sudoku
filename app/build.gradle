@@ -12,7 +12,7 @@ android {
         applicationId "com.attej.sudoku"
         minSdk 21
         targetSdk 32
-        versionCode 15
+        versionCode 16
         versionName '1.0.5'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -40,6 +40,7 @@ dependencies {
     implementation 'com.google.android.play:review:2.0.0'
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.android.gms:play-services-ads:20.6.0'
+    implementation "com.google.android.gms:play-services-games-v2:+"
     implementation 'com.google.android.ump:user-messaging-platform:2.0.0'
 
     implementation 'com.google.firebase:firebase-analytics'
