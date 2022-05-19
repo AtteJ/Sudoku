@@ -591,10 +591,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         if (stats.getBestTime(difficulty) > timeSeconds || stats.getBestTime(difficulty) == 0)
             message += " New Best Time!";
 
-        stats.addPlaytime(timeSeconds);
-        saveRecord(true);
-
-
         if (difficulty == 0)
             stats.addExperience(5);
         if (difficulty == 1)
@@ -604,6 +600,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         if (difficulty == 3)
             stats.addExperience(25);
 
+        stats.addPlaytime(timeSeconds);
+        saveRecord(true);
+        
         new AlertDialog.Builder(this)
                 .setTitle("Game won!")
                 .setMessage(message)
