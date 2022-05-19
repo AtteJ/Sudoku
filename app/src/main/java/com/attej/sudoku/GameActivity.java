@@ -642,16 +642,18 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
 
     private void incrementAchievements() {
-        stats.refreshAchievements(this);
+        PlayGames.getAchievementsClient(this).unlock(getString(R.string.achievement_first_win));
         PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_10_games), 1);
         PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_50_games), 1);
         PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_100_games), 1);
         if (difficulty == 2) {
+            PlayGames.getAchievementsClient(this).unlock(getString(R.string.achievement_win_a_hard_game));
             PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_10_hard_games), 1);
             PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_50_hard_games), 1);
             PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_100_hard_games), 1);
         }
         if (difficulty == 3) {
+            PlayGames.getAchievementsClient(this).unlock(getString(R.string.achievement_win_an_extreme_game));
             PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_10_extreme_games), 1);
             PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_50_extreme_games), 1);
             PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_100_extreme_games), 1);
