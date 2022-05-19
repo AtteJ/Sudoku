@@ -226,10 +226,12 @@ public class MainActivity extends AppCompatActivity {
         Button newGame = findViewById(R.id.buttonStartNewGame);
         Button stats = findViewById(R.id.buttonViewStats);
         Button leaderboard = findViewById(R.id.buttonLeaderboard);
+        Button achievements = findViewById(R.id.buttonAchievements);
 
         newGame.setEnabled(enabled);
         stats.setEnabled(enabled);
         leaderboard.setEnabled(enabled);
+        achievements.setEnabled(enabled);
     }
 
 

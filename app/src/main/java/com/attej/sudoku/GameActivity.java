@@ -658,9 +658,12 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
             PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_50_extreme_games), 1);
             PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_100_extreme_games), 1);
         }
-        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_total_playtime_of_one_hour), timeSeconds);
-        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_total_playtime_of_10_hours), timeSeconds);
-        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_total_playtime_of_100_hours), timeSeconds);
+        if (stats.getTotalPlaytime() >= 3600)
+            PlayGames.getAchievementsClient(this).unlock(getString(R.string.achievement_total_playtime_of_one_hour));
+        if (stats.getTotalPlaytime() >= 36000)
+            PlayGames.getAchievementsClient(this).unlock(getString(R.string.achievement_total_playtime_of_10_hours));
+        if (stats.getTotalPlaytime() >= 360000)
+            PlayGames.getAchievementsClient(this).unlock(getString(R.string.achievement_total_playtime_of_100_hours));
 
     }
 
