@@ -594,7 +594,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         stats.addPlaytime(timeSeconds);
         saveRecord(true);
 
-        incrementAchievements();
 
         if (difficulty == 0)
             stats.addExperience(5);
@@ -623,32 +622,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     }
 
 
-    private void incrementAchievements() {
-        stats.refreshAchievements(this);
-        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_10_games), 1);
-        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_50_games), 1);
-        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_100_games), 1);
-        if (difficulty == 2) {
-            PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_10_hard_games), 1);
-            PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_50_hard_games), 1);
-            PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_100_hard_games), 1);
-        }
-        if (difficulty == 3) {
-            PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_10_extreme_games), 1);
-            PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_50_extreme_games), 1);
-            PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_100_extreme_games), 1);
-        }
-        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_total_playtime_of_one_hour), timeSeconds);
-        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_total_playtime_of_10_hours), timeSeconds);
-        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_total_playtime_of_100_hours), timeSeconds);
-
-    }
-
-
     private void gameLost() {
         stopTimer();
         enableNumButts(false);
-        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_lose_10_games), 1);
 
         timeSeconds += (int) (updateTime / 1000);
 
@@ -677,21 +653,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         if (won) {
             record = new GameRecord(timeSeconds, difficulty);
 
-            int bestTime = stats.getBestTime(difficulty);
-            if (bestTime > timeSeconds || bestTime == 0) {
-                if (difficulty == 0) {
-                    PlayGames.getLeaderboardsClient(this).submitScore(getString(R.string.leaderboard_easy), timeSeconds);
-                }
-                if (difficulty == 1) {
-                    PlayGames.getLeaderboardsClient(this).submitScore(getString(R.string.leaderboard_normal), timeSeconds);
-                }
-                if (difficulty == 2) {
-                    PlayGames.getLeaderboardsClient(this).submitScore(getString(R.string.leaderboard_hard), timeSeconds);
-                }
-                if (difficulty == 3) {
-                    PlayGames.getLeaderboardsClient(this).submitScore(getString(R.string.leaderboard_extreme), timeSeconds);
-                }
-            }
         }
         else {
             record = new GameRecord(-1, difficulty);

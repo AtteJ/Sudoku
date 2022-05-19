@@ -17,7 +17,8 @@
         android:textSize="30sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <fragment
         android:id="@+id/experience"
@@ -27,8 +28,10 @@
         android:layout_gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gameTitle"
         app:layout_constraintBottom_toTopOf="@+id/buttonStartNewGame"
-        app:layout_constraintTop_toBottomOf="@+id/gameTitle" />
+        app:layout_constraintVertical_bias="0.5"
+        />
 
     <Button
         android:id="@+id/buttonStartNewGame"
@@ -38,7 +41,6 @@
         android:onClick="onStartNewGameButtonClicked"
         android:text="@string/new_game"
         android:textColor="@color/white"
-        app:layout_constraintVertical_bias="0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/experience"
@@ -53,24 +55,12 @@
         android:onClick="onViewStatsButtonClicked"
         android:text="@string/stats"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/buttonLeaderboard"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonStartNewGame" />
-
-    <Button
-        android:id="@+id/buttonLeaderboard"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="75dp"
-        android:onClick="onLeaderboardButtonClicked"
-        android:text="@string/leaderboard"
-        android:textColor="@color/white"
+        android:layout_marginBottom="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonViewStats" />
+        app:layout_constraintTop_toBottomOf="@id/buttonStartNewGame"
+        />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"

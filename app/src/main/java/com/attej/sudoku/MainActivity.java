@@ -49,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
         setConsentForm();
         if (consentInformation.getConsentStatus() == ConsentInformation.ConsentStatus.NOT_REQUIRED) {
-            recordEvent("consent_not_required", "consent_not_required", "Consent not required");
+            if (mFirebaseAnalytics != null)
+                recordEvent("consent_not_required", "consent_not_required", "Consent not required");
             setAnalytics();
             setTestAds();
             setAds();
@@ -57,8 +58,6 @@ public class MainActivity extends AppCompatActivity {
 
         // consentInformation.reset();  // TODO: remove in prod
         refreshStats();
-        PlayGamesSdk.initialize(this);
-        verifyGamesSignIn();
     }
 
 
@@ -153,25 +152,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void verifyGamesSignIn() {
-        GamesSignInClient gamesSignInClient = PlayGames.getGamesSignInClient(getParent());
-
-        gamesSignInClient.isAuthenticated().addOnCompleteListener(isAuthenticatedTask -> {
-            boolean isAuthenticated =
-                    (isAuthenticatedTask.isSuccessful() &&
-                            isAuthenticatedTask.getResult().isAuthenticated());
-
-            if (isAuthenticated) {
-                // Continue with Play Games Services
-            } else {
-                // Disable your integration with Play Games Services or show a
-                // login button to ask  players to sign-in. Clicking it should
-                // call GamesSignInClient.signIn().
-            }
-        });
-    }
-
-
     private void refreshStats() {
         Stats stats = new Stats(getApplicationContext());
         experience = stats.getExperience();
@@ -200,11 +180,9 @@ public class MainActivity extends AppCompatActivity {
     private void enableButtons(boolean enabled) {
         Button newGame = findViewById(R.id.buttonStartNewGame);
         Button stats = findViewById(R.id.buttonViewStats);
-        Button leaderboard = findViewById(R.id.buttonLeaderboard);
 
         newGame.setEnabled(enabled);
         stats.setEnabled(enabled);
-        leaderboard.setEnabled(enabled);
     }
 
 
@@ -220,14 +198,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d(((Button) view).getText().toString(), "View stats button clicked");
         enableButtons(false);
         Intent intent = new Intent(this, StatsActivity.class);
-        NewGameActivityResultLauncher.launch(intent);
-    }
-
-
-    public void onLeaderboardButtonClicked(View view) {
-        Log.d(((Button) view).getText().toString(), "Leaderboard button clicked");
-        enableButtons(false);
-        Intent intent = new Intent(this, LeaderboardActivity.class);
         NewGameActivityResultLauncher.launch(intent);
     }
 
