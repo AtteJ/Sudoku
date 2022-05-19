@@ -49,10 +49,10 @@ public class MainActivity extends AppCompatActivity {
 
         setConsentForm();
         if (consentInformation.getConsentStatus() == ConsentInformation.ConsentStatus.NOT_REQUIRED) {
-            recordEvent("consent_not_required", "consent_not_required", "Consent not required");
             setAnalytics();
             setTestAds();
             setAds();
+            recordEvent("consent_not_required", "consent_not_required", "Consent not required");
         }
 
         // consentInformation.reset();  // TODO: remove in prod

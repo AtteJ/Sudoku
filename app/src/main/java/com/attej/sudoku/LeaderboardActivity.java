@@ -105,12 +105,7 @@ public class LeaderboardActivity extends AppCompatActivity {
 
         PlayGames.getLeaderboardsClient(this)
                 .getLeaderboardIntent(leaderboard_id)
-                .addOnSuccessListener(new OnSuccessListener<Intent>() {
-                    @Override
-                    public void onSuccess(Intent intent) {
-                        startActivityForResult(intent, 1);
-                    }
-                });
+                .addOnSuccessListener(intent -> startActivityForResult(intent, 1));
     }
 
 

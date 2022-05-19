@@ -81,7 +81,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         setAnalytics();
 
         final Handler adHandler = new Handler();
-        final int delay = 5000;
+        final int delay = 4000;
 
         adHandler.postDelayed(new Runnable() {
             @Override
@@ -591,11 +591,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         if (stats.getBestTime(difficulty) > timeSeconds || stats.getBestTime(difficulty) == 0)
             message += " New Best Time!";
 
-        stats.addPlaytime(timeSeconds);
-        saveRecord(true);
-
-        incrementAchievements();
-
         if (difficulty == 0)
             stats.addExperience(5);
         if (difficulty == 1)
@@ -604,6 +599,11 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
             stats.addExperience(15);
         if (difficulty == 3)
             stats.addExperience(25);
+
+        stats.addPlaytime(timeSeconds);
+        saveRecord(true);
+
+        incrementAchievements();
 
         new AlertDialog.Builder(this)
                 .setTitle("Game won!")
@@ -744,7 +744,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                 }
             });
         else {
-            Toast.makeText(getApplicationContext(), "Ad failed to load", Toast.LENGTH_SHORT).show();
+
             mistakes--;
             updateCounters();
         }
