@@ -59,18 +59,49 @@
         app:layout_constraintTop_toBottomOf="@id/buttonStartNewGame" />
 
     <Button
+        android:id="@+id/buttonSignIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/button_margin"
+        android:onClick="onSignInButtonClicked"
+        android:visibility="invisible"
+        android:enabled="false"
+        android:text="@string/signin"
+        android:textColor="@color/white"
+        android:tag="3"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonViewStats"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <Button
         android:id="@+id/buttonLeaderboard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="75dp"
         android:onClick="onLeaderboardButtonClicked"
         android:text="@string/leaderboard"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/buttonAchievements"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonViewStats" />
+
+    <Button
+        android:id="@+id/buttonAchievements"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="75dp"
+        android:onClick="onAchievementsButtonClicked"
+        android:text="@string/achievements"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonViewStats" />
+        app:layout_constraintTop_toBottomOf="@id/buttonLeaderboard" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"

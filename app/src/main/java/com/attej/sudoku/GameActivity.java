@@ -32,6 +32,7 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+import com.google.android.gms.games.LeaderboardsClient;
 import com.google.android.gms.games.PlayGames;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -72,6 +73,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private final String TAG = "GameActivity";
     FirebaseAnalytics mFirebaseAnalytics;
 
+    LeaderboardsClient leaderboardsClient;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +95,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
             }
         }, delay);
 
-
+        leaderboardsClient = PlayGames.getLeaderboardsClient(this);
         stats = new Stats(getApplicationContext());
 
         int givens = getIntent().getIntExtra("givens", 0);
@@ -603,6 +606,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         stats.addPlaytime(timeSeconds);
         saveRecord(true);
 
+        submitTime();
         incrementAchievements();
 
         new AlertDialog.Builder(this)
@@ -620,6 +624,20 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                     setResult(2, intent);
                     finish();
                 }).setCancelable(false).show();
+    }
+
+
+    private void submitTime() {
+        String leaderboard = "";
+        if (difficulty == 0)
+            leaderboard = getString(R.string.leaderboard_easy);
+        if (difficulty == 1)
+            leaderboard = getString(R.string.leaderboard_normal);
+        if (difficulty == 2)
+            leaderboard = getString(R.string.leaderboard_hard);
+        if (difficulty == 3)
+            leaderboard = getString(R.string.leaderboard_extreme);
+        leaderboardsClient.submitScore(leaderboard, updateTime);
     }
 
 
@@ -676,22 +694,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         GameRecord record;
         if (won) {
             record = new GameRecord(timeSeconds, difficulty);
-
-            int bestTime = stats.getBestTime(difficulty);
-            if (bestTime > timeSeconds || bestTime == 0) {
-                if (difficulty == 0) {
-                    PlayGames.getLeaderboardsClient(this).submitScore(getString(R.string.leaderboard_easy), timeSeconds);
-                }
-                if (difficulty == 1) {
-                    PlayGames.getLeaderboardsClient(this).submitScore(getString(R.string.leaderboard_normal), timeSeconds);
-                }
-                if (difficulty == 2) {
-                    PlayGames.getLeaderboardsClient(this).submitScore(getString(R.string.leaderboard_hard), timeSeconds);
-                }
-                if (difficulty == 3) {
-                    PlayGames.getLeaderboardsClient(this).submitScore(getString(R.string.leaderboard_extreme), timeSeconds);
-                }
-            }
         }
         else {
             record = new GameRecord(-1, difficulty);

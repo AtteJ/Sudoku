@@ -1,6 +1,5 @@
 package com.attej.sudoku;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,15 +14,12 @@ import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.games.GamesSignInClient;
 import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.games.PlayGamesSdk;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.ump.ConsentInformation;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class LeaderboardActivity extends AppCompatActivity {
-    private FirebaseAnalytics mFirebaseAnalytics;
     private AdView mAdView;
     GamesSignInClient gamesSignInClient;
 
@@ -43,7 +39,7 @@ public class LeaderboardActivity extends AppCompatActivity {
 
     private void setAnalytics() {
         // Obtain the FirebaseAnalytics instance.
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 
 
@@ -90,7 +86,7 @@ public class LeaderboardActivity extends AppCompatActivity {
     }
 
 
-    public void onDifficultyButtonClicked(View view) {
+    public void onDifficultyLeaderboardButtonClicked(View view) {
         int difficulty = Integer.parseInt((view).getTag().toString());
 
         String leaderboard_id = "";

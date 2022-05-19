@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.attej.sudoku.MainActivity">
+    tools:context="com.attej.sudoku.LeaderboardActivity">
 
     <TextView
         android:id="@+id/gameTitle"
@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/button_margin"
-            android:onClick="onDifficultyButtonClicked"
+            android:onClick="onDifficultyLeaderboardButtonClicked"
             android:text="@string/easy"
             android:textColor="@color/white"
             android:tag="0"
@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/button_margin"
-            android:onClick="onDifficultyButtonClicked"
+            android:onClick="onDifficultyLeaderboardButtonClicked"
             android:text="@string/normal"
             android:textColor="@color/white"
             android:tag="1"
@@ -55,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/button_margin"
-            android:onClick="onDifficultyButtonClicked"
+            android:onClick="onDifficultyLeaderboardButtonClicked"
             android:text="@string/hard"
             android:textColor="@color/white"
             android:tag="2"
@@ -65,7 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/button_margin"
-            android:onClick="onDifficultyButtonClicked"
+            android:onClick="onDifficultyLeaderboardButtonClicked"
             android:text="@string/expert"
             android:textColor="@color/white"
             android:tag="3"
