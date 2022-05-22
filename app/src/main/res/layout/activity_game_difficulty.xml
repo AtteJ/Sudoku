@@ -3,6 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.attej.sudoku.GameDifficultyActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal">
@@ -37,7 +39,7 @@
             android:layout_marginBottom="@dimen/button_margin"
             android:onClick="onDifficultyButtonClicked"
             android:text="@string/easy"
-            android:textColor="@color/white"
+            android:textColor="?android:textColorSecondary"
             android:tag="0"
             android:gravity="center"/>
         <Button
@@ -47,7 +49,7 @@
             android:layout_marginBottom="@dimen/button_margin"
             android:onClick="onDifficultyButtonClicked"
             android:text="@string/normal"
-            android:textColor="@color/white"
+            android:textColor="?android:textColorSecondary"
             android:tag="1"
             android:gravity="center"/>
         <Button
@@ -57,7 +59,7 @@
             android:layout_marginBottom="@dimen/button_margin"
             android:onClick="onDifficultyButtonClicked"
             android:text="@string/hard"
-            android:textColor="@color/white"
+            android:textColor="?android:textColorSecondary"
             android:tag="2"
             android:gravity="center"/>
         <Button
@@ -67,7 +69,7 @@
             android:layout_marginBottom="@dimen/button_margin"
             android:onClick="onDifficultyButtonClicked"
             android:text="@string/expert"
-            android:textColor="@color/white"
+            android:textColor="?android:textColorSecondary"
             android:tag="3"
             android:gravity="center"/>
     </LinearLayout>
@@ -92,7 +94,7 @@
         android:layout_height="wrap_content"
         android:onClick="onGoBackButtonClicked"
         android:text="@string/go_back"
-        android:textColor="@color/white"
+        android:textColor="?android:textColorSecondary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"

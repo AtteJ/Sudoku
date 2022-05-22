@@ -13,8 +13,10 @@
     <string name="new_game">New Game</string>
     <string name="stats">Stats</string>
     <string name="leaderboard">Leaderboards</string>
+    <string name="achievements">Achievements</string>
     <string name="signin">Sign in</string>
     <string name="go_back">Go Back</string>
+    <string name="go_home">Go Home</string>
 
     <string name="game_stats">Game Stats</string>
     <string name="clear_stats">Clear Stats</string>
@@ -25,6 +27,10 @@
     <string name="win_percentage">Win Percentage: %1$d%%</string>
     <string name="games_won">Games Won: %1$d</string>
     <string name="games_played">Games Played: %1$d</string>
+    <string name="game_won">Game Won</string>
+    <string name="game_lost">Game Lost</string>
+
+    <string name="continue_game">Continue by watching an ad?</string>
 
     <string name="level">Level: %1$d</string>
     <string name="experience">Experience: %1$d/100</string>
@@ -90,9 +96,9 @@
     <!--achievement Lose 10 games-->
     <string name="achievement_lose_10_games" translatable="false">CgkIgpD2tZ8YEAIQCw</string>
     <!--leaderboard Easy-->
-    <string name="leaderboard_easy" translatable="false">CgkIgpD2tZ8YEAIQAQ</string>
+    <string name="leaderboard_easy" translatable="false">CgkIgpD2tZ8YEAIQFQ</string>
     <!--leaderboard Normal-->
-    <string name="leaderboard_normal" translatable="false">CgkIgpD2tZ8YEAIQAg</string>
+    <string name="leaderboard_normal" translatable="false">CgkIgpD2tZ8YEAIQFg</string>
     <!--leaderboard Hard-->
     <string name="leaderboard_hard" translatable="false">CgkIgpD2tZ8YEAIQAw</string>
     <!--leaderboard Extreme-->

@@ -1,5 +1,6 @@
 package com.attej.sudoku;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -187,7 +188,7 @@ public class StatsActivity extends AppCompatActivity {
 
     public void onClearStatsClicked(View view) {
         Log.d(((Button) view).getText().toString(), "Clear stats clicked");
-        new AlertDialog.Builder(this)
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setTitle("Are you sure?")
                 .setMessage("This is irreversible")
                 .setPositiveButton("Clear stats", (dialog, whichButton) -> {
@@ -196,5 +197,7 @@ public class StatsActivity extends AppCompatActivity {
                     recordEvent("stats_cleared", "stats_cleared", "Stats cleared");
                 })
                 .setNegativeButton("Cancel", null).show();
+        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.light_gray));
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.light_gray));
     }
 }

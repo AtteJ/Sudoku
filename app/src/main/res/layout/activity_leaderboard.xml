@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.attej.sudoku.LeaderboardActivity">
+
+    <TextView
+        android:id="@+id/gameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/main_activity_title_top_margin"
+        android:text="@string/app_name"
+        android:textColor="?android:textColorPrimary"
+        android:textSize="30sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/difficultyButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gameTitle"
+        app:layout_constraintVertical_bias="0.2"
+        >
+        <Button
+            android:id="@+id/buttonEasy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/button_margin"
+            android:onClick="onDifficultyLeaderboardButtonClicked"
+            android:text="@string/easy"
+            android:textColor="@color/white"
+            android:tag="0"
+            android:gravity="center"/>
+        <Button
+            android:id="@+id/buttonNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/button_margin"
+            android:onClick="onDifficultyLeaderboardButtonClicked"
+            android:text="@string/normal"
+            android:textColor="@color/white"
+            android:tag="1"
+            android:gravity="center"/>
+        <Button
+            android:id="@+id/buttonHard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/button_margin"
+            android:onClick="onDifficultyLeaderboardButtonClicked"
+            android:text="@string/hard"
+            android:textColor="@color/white"
+            android:tag="2"
+            android:gravity="center"/>
+        <Button
+            android:id="@+id/buttonExpert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/button_margin"
+            android:onClick="onDifficultyLeaderboardButtonClicked"
+            android:text="@string/expert"
+            android:textColor="@color/white"
+            android:tag="3"
+            android:gravity="center"/>
+        <Button
+            android:id="@+id/buttonSignIn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/button_margin"
+            android:layout_marginTop="30dp"
+            android:onClick="onSignInButtonClicked"
+            android:visibility="invisible"
+            android:enabled="false"
+            android:text="@string/signin"
+            android:textColor="@color/white"
+            android:tag="3"
+            android:gravity="center"/>
+    </LinearLayout>
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onGoBackButtonClicked"
+        android:text="@string/go_back"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.965"
+        android:layout_marginStart="16dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

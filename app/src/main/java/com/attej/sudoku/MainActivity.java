@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private ConsentInformation consentInformation;
     private ConsentForm consentForm;
     FirebaseAnalytics mFirebaseAnalytics;
+    GamesSignInClient gamesSignInClient;
 
 
     @Override
@@ -54,10 +55,13 @@ public class MainActivity extends AppCompatActivity {
             setAnalytics();
             setTestAds();
             setAds();
+            // recordEvent("consent_not_required", "consent_not_required", "Consent not required");
         }
 
         // consentInformation.reset();  // TODO: remove in prod
         refreshStats();
+        PlayGamesSdk.initialize(this);
+        verifyGamesSignIn();
     }
 
 
@@ -152,6 +156,49 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void verifyGamesSignIn() {
+        gamesSignInClient = PlayGames.getGamesSignInClient(getParent());
+
+        gamesSignInClient.isAuthenticated().addOnCompleteListener(isAuthenticatedTask -> {
+            boolean isAuthenticated =
+                    (isAuthenticatedTask.isSuccessful() &&
+                            isAuthenticatedTask.getResult().isAuthenticated());
+
+            // Continue with Play Games Services
+            // Disable your integration with Play Games Services or show a
+            // login button to ask  players to sign-in. Clicking it should
+            // call GamesSignInClient.signIn().
+            enableSignInButton(!isAuthenticated);
+        });
+    }
+
+
+    private void enableSignInButton(boolean enabled) {
+        Button leaderboard = findViewById(R.id.buttonLeaderboard);
+        Button achievements = findViewById(R.id.buttonAchievements);
+        Button signIn = findViewById(R.id.buttonSignIn);
+
+        int playGamesVisibility;
+        int signInVisibility;
+        if (enabled) {
+            playGamesVisibility = View.INVISIBLE;
+            signInVisibility = View.VISIBLE;
+        }
+        else {
+            playGamesVisibility = View.VISIBLE;
+            signInVisibility = View.INVISIBLE;
+        }
+
+        leaderboard.setVisibility(playGamesVisibility);
+        leaderboard.setEnabled(!enabled);
+        achievements.setVisibility(playGamesVisibility);
+        achievements.setEnabled(!enabled);
+        signIn.setVisibility(signInVisibility);
+        signIn.setEnabled(enabled);
+        signIn.setBackgroundColor(getResources().getColor(R.color.googlePlayGames));
+    }
+
+
     private void refreshStats() {
         Stats stats = new Stats(getApplicationContext());
         experience = stats.getExperience();
@@ -178,11 +225,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void enableButtons(boolean enabled) {
-        Button newGame = findViewById(R.id.buttonStartNewGame);
-        Button stats = findViewById(R.id.buttonViewStats);
-
-        newGame.setEnabled(enabled);
-        stats.setEnabled(enabled);
+        findViewById(R.id.buttonStartNewGame).setEnabled(enabled);
+        findViewById(R.id.buttonViewStats).setEnabled(enabled);
+        findViewById(R.id.buttonLeaderboard).setEnabled(enabled);
+        findViewById(R.id.buttonAchievements).setEnabled(enabled);
+        findViewById(R.id.buttonSignIn).setEnabled(enabled);
     }
 
 
@@ -199,6 +246,30 @@ public class MainActivity extends AppCompatActivity {
         enableButtons(false);
         Intent intent = new Intent(this, StatsActivity.class);
         NewGameActivityResultLauncher.launch(intent);
+    }
+
+
+    public void onLeaderboardButtonClicked(View view) {
+        Log.d(((Button) view).getText().toString(), "Leaderboard button clicked");
+        enableButtons(false);
+        Intent intent = new Intent(this, LeaderboardActivity.class);
+        NewGameActivityResultLauncher.launch(intent);
+    }
+
+
+    public void onAchievementsButtonClicked(View view) {
+        Log.d(((Button) view).getText().toString(), "Achievements button clicked");
+        PlayGames.getAchievementsClient(this)
+                .getAchievementsIntent()
+                .addOnSuccessListener(intent -> startActivityForResult(intent, 1));
+    }
+
+    public void onSignInButtonClicked(View view) {
+        gamesSignInClient.signIn();
+        Button signIn = findViewById(R.id.buttonSignIn);
+        signIn.setEnabled(false);
+        signIn.setVisibility(View.INVISIBLE);
+        verifyGamesSignIn();
     }
 
 }

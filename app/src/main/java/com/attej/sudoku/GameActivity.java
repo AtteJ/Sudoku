@@ -12,11 +12,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.attej.sudoku.backend.AdManager;
 import com.attej.sudoku.backend.Board;
 import com.attej.sudoku.backend.Cell;
 import com.attej.sudoku.backend.CellGroupFragment;
@@ -32,6 +35,7 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+import com.google.android.gms.games.LeaderboardsClient;
 import com.google.android.gms.games.PlayGames;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -72,6 +76,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private final String TAG = "GameActivity";
     FirebaseAnalytics mFirebaseAnalytics;
 
+    LeaderboardsClient leaderboardsClient;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,24 +85,15 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         setContentView(R.layout.activity_game);
 
         setAnalytics();
+        AdManager admanager = new AdManager();
+        admanager.loadAd(this);
 
-        final Handler adHandler = new Handler();
-        final int delay = 5000;
-
-        adHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mRewardedAd == null)
-                    loadAd();
-                adHandler.postDelayed(this, delay);
-            }
-        }, delay);
-
-
+        leaderboardsClient = PlayGames.getLeaderboardsClient(this);
         stats = new Stats(getApplicationContext());
 
         int givens = getIntent().getIntExtra("givens", 0);
         difficulty = getIntent().getIntExtra("difficulty", 0);
+
         createBoard();
         createSudoku(givens);
         addGivens();
@@ -110,6 +107,22 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         timer = findViewById(R.id.stopWatch);
         handler = new Handler() ;
 
+        startTimer();
+    }
+
+
+    @Override
+    protected void onPause() {
+        Log.d(TAG, "Application going to background");
+        super.onPause();
+        stopTimer();
+    }
+
+
+    @Override
+    protected void onResume() {
+        Log.d(TAG, "Application resuming from background");
+        super.onResume();
         startTimer();
     }
 
@@ -145,29 +158,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, message);
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "game_activity");
         mFirebaseAnalytics.logEvent(event, bundle);
-    }
-
-
-    private void loadAd() {
-        AdRequest adRequest = new AdRequest.Builder().build();
-
-        RewardedAd.load(this, "ca-app-pub-6148517439938867/1368714923",
-                adRequest, new RewardedAdLoadCallback() {
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        // Handle the error.
-                        Log.d(TAG, loadAdError.getMessage());
-                        mRewardedAd = null;
-                        recordEvent("ad_loaded_fail", "ad_loaded_fail", "Ad failed to load");
-                    }
-
-                    @Override
-                    public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
-                        mRewardedAd = rewardedAd;
-                        Log.d(TAG, "Ad was loaded.");
-                        recordEvent("ad_loaded", "ad_loaded", "Ad was loaded");
-                    }
-                });
     }
 
 
@@ -243,6 +233,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
             setNote(num);
             return;
         }
+        else if (note && clickedCell.getNumber() != 0) {
+            return;
+        }
 
         int row = getSelectedRow();
         int column = getSelectedColumn();
@@ -279,6 +272,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
 
     public void setNote(int num) {
+        if (clickedCell.getNumber() != 0)
+            return;
         clickedCell.setNote(num);
         board.setNote(getSelectedRow(), getSelectedColumn(), num);
     }
@@ -587,37 +582,13 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         stopTimer();
         // timeSeconds += (int) (updateTime / 1000);
 
-        String message = String.format(getString(R.string.game_won_message), timeSeconds / 60, timeSeconds % 60);
-        if (stats.getBestTime(difficulty) > timeSeconds || stats.getBestTime(difficulty) == 0)
-            message += " New Best Time!";
+        submitTime();
+        incrementAchievements();
 
-        if (difficulty == 0)
-            stats.addExperience(5);
-        if (difficulty == 1)
-            stats.addExperience(10);
-        if (difficulty == 2)
-            stats.addExperience(15);
-        if (difficulty == 3)
-            stats.addExperience(25);
-
-        stats.addPlaytime(timeSeconds);
-        saveRecord(true);
-        
-        new AlertDialog.Builder(this)
-                .setTitle("Game won!")
-                .setMessage(message)
-                .setPositiveButton("New game", (dialog, whichButton) -> {
-                    Intent intent = new Intent();
-                    intent.putExtra("Lost", 0);
-                    setResult(1, intent);
-                    finish();
-                })
-                .setNegativeButton("Choose Difficulty", (dialog, which) -> {
-                    Intent intent = new Intent();
-                    intent.putExtra("Lost", 1);
-                    setResult(2, intent);
-                    finish();
-                }).setCancelable(false).show();
+        Intent intent = new Intent(this, GameWonActivity.class);
+        intent.putExtra("time", timeSeconds);
+        intent.putExtra("difficulty", difficulty);
+        GameWonActivityResultLauncher.launch(intent);
     }
 
 
@@ -627,23 +598,50 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
         timeSeconds += (int) (updateTime / 1000);
 
-        new AlertDialog.Builder(this)
-                .setTitle("Game Lost!")
-                .setMessage("Game Lost!")
-                .setPositiveButton("Continue by watching an ad?", (dialog, whichButton) -> {
-                    getNewTry();
-                    startTimer();
-                    enableNumButts(true);
-                    loadAd();
-                })
-                .setNegativeButton("New game?", (dialog, whichButton) -> {
-                    saveRecord(false);
-                    stats.addPlaytime(timeSeconds);
-                    Intent intent = new Intent();
-                    intent.putExtra("Lost", 1);
-                    setResult(1, intent);
-                    finish();
-                }).setCancelable(false).show();
+        Intent intent = new Intent(this, GameLostActivity.class);
+
+        GameLostActivityResultLauncher.launch(intent);
+    }
+
+
+    private void submitTime() {
+        String leaderboard = "";
+        if (difficulty == 0)
+            leaderboard = getString(R.string.leaderboard_easy);
+        if (difficulty == 1)
+            leaderboard = getString(R.string.leaderboard_normal);
+        if (difficulty == 2)
+            leaderboard = getString(R.string.leaderboard_hard);
+        if (difficulty == 3)
+            leaderboard = getString(R.string.leaderboard_extreme);
+        leaderboardsClient.submitScore(leaderboard, updateTime);
+    }
+
+
+    private void incrementAchievements() {
+        PlayGames.getAchievementsClient(this).unlock(getString(R.string.achievement_first_win));
+        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_10_games), 1);
+        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_50_games), 1);
+        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_100_games), 1);
+        if (difficulty == 2) {
+            PlayGames.getAchievementsClient(this).unlock(getString(R.string.achievement_win_a_hard_game));
+            PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_10_hard_games), 1);
+            PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_50_hard_games), 1);
+            PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_100_hard_games), 1);
+        }
+        if (difficulty == 3) {
+            PlayGames.getAchievementsClient(this).unlock(getString(R.string.achievement_win_an_extreme_game));
+            PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_10_extreme_games), 1);
+            PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_50_extreme_games), 1);
+            PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_win_100_extreme_games), 1);
+        }
+        if (stats.getTotalPlaytime() >= 3600)
+            PlayGames.getAchievementsClient(this).unlock(getString(R.string.achievement_total_playtime_of_one_hour));
+        if (stats.getTotalPlaytime() >= 36000)
+            PlayGames.getAchievementsClient(this).unlock(getString(R.string.achievement_total_playtime_of_10_hours));
+        if (stats.getTotalPlaytime() >= 360000)
+            PlayGames.getAchievementsClient(this).unlock(getString(R.string.achievement_total_playtime_of_100_hours));
+
     }
 
 
@@ -651,81 +649,12 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         GameRecord record;
         if (won) {
             record = new GameRecord(timeSeconds, difficulty);
-
         }
         else {
             record = new GameRecord(-1, difficulty);
         }
         stats.addRecord(record);
         stats.saveStats();
-    }
-
-
-    private void getNewTry() {
-        setTestAds();
-        showAd();
-        checkReward();
-    }
-
-
-    private void setTestAds() {
-        List<String> testDeviceIds = Arrays.asList("20D91EB201806F1C7EA6457155F468D8", "62AEE42886038F87608F7F6F5D0B41BA");
-        RequestConfiguration configuration =
-                new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build(); // Test ads
-        MobileAds.setRequestConfiguration(configuration);                                   // Test ads
-    }
-
-
-    private void showAd() {
-        if (mRewardedAd != null)
-            mRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                @Override
-                public void onAdShowedFullScreenContent() {
-                    // Called when ad is shown.
-                    Log.d(TAG, "Ad was shown.");
-                }
-
-                @Override
-                public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
-                    // Called when ad fails to show.
-                    Log.d(TAG, "Ad failed to show.");
-                    Toast.makeText(getApplicationContext(), "Ad failed to load", Toast.LENGTH_SHORT).show();
-                    mistakes--;
-                    updateCounters();
-                }
-
-                @Override
-                public void onAdDismissedFullScreenContent() {
-                    // Called when ad is dismissed.
-                    // Set the ad reference to null so you don't show the ad a second time.
-                    Log.d(TAG, "Ad was dismissed.");
-                    mRewardedAd = null;
-                    updateCounters();
-                }
-            });
-        else {
-            Toast.makeText(getApplicationContext(), "Ad failed to load", Toast.LENGTH_SHORT).show();
-            mistakes--;
-            updateCounters();
-        }
-    }
-
-
-    private void checkReward() {
-        if (mRewardedAd != null) {
-            Activity activityContext = GameActivity.this;
-            mRewardedAd.show(activityContext, rewardItem -> {
-                // Handle the reward.
-                Log.d(TAG, "The user earned the reward.");
-                recordEvent("rewarded_ad_shown", "rewarded_ad_shown", "User watched rewarded ad");
-                mistakes--;
-                updateCounters();
-            });
-        } else {
-            Log.d(TAG, "The rewarded ad wasn't ready yet.");
-            recordEvent("reward_ad_failed", "reward_ad_failed", "Failed to load rewarded ad");
-            updateCounters();
-        }
     }
 
 
@@ -744,4 +673,79 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         }
 
     };
+
+
+    final ActivityResultLauncher<Intent> GameLostActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getData().getIntExtra("Ad watched", 0) == 1) {
+                    mistakes--;
+                    startTimer();
+                    enableNumButts(true);
+                }
+                if (result.getData().getIntExtra("Ad watched", 0) == 2) {
+                    Toast.makeText(this, "Ad failed to load", Toast.LENGTH_LONG).show();
+                    mistakes--;
+                    startTimer();
+                    enableNumButts(true);
+                }
+                if (result.getData().getIntExtra("Ad watched", 0) == 0) {
+                    submitTime();
+                    incrementAchievements();
+                    saveRecord(false);
+                    stats.addPlaytime(timeSeconds);
+                    PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_lose_10_games), 1);
+                    Intent intent = new Intent();
+                    intent.putExtra("Lost", 1);
+                    setResult(1, intent);
+                    finish();
+                }
+            });
+
+
+    final ActivityResultLauncher<Intent> GameWonActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getData().getIntExtra("Game won", 0) == 1) {
+                    if (difficulty == 0)
+                        stats.addExperience(5);
+                    if (difficulty == 1)
+                        stats.addExperience(10);
+                    if (difficulty == 2)
+                        stats.addExperience(15);
+                    if (difficulty == 3)
+                        stats.addExperience(25);
+
+                    stats.addPlaytime(timeSeconds);
+                    saveRecord(true);
+
+                    submitTime();
+                    incrementAchievements();
+
+                    Intent intent = new Intent();
+                    intent.putExtra("Go home", 0);
+                    setResult(1, intent);
+                }
+                if (result.getData().getIntExtra("Go home", 0) == 1) {
+                    if (difficulty == 0)
+                        stats.addExperience(5);
+                    if (difficulty == 1)
+                        stats.addExperience(10);
+                    if (difficulty == 2)
+                        stats.addExperience(15);
+                    if (difficulty == 3)
+                        stats.addExperience(25);
+
+                    stats.addPlaytime(timeSeconds);
+                    saveRecord(true);
+
+                    submitTime();
+                    incrementAchievements();
+
+                    Intent intent = new Intent();
+                    intent.putExtra("Go home", 1);
+                    setResult(1, intent);
+                }
+                finish();
+            });
 }
