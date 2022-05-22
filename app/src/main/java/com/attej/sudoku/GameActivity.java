@@ -111,6 +111,22 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
 
     @Override
+    protected void onPause() {
+        Log.d(TAG, "Application going to background");
+        super.onPause();
+        stopTimer();
+    }
+
+
+    @Override
+    protected void onResume() {
+        Log.d(TAG, "Application resuming from background");
+        super.onResume();
+        startTimer();
+    }
+
+
+    @Override
     public void onFragmentInteraction(int groupId, int cellId, View view) {
         int row = ((groupId-1)/3)*3 + (cellId/3);
         int column = ((groupId-1)%3)*3 + ((cellId)%3);
@@ -214,6 +230,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private void setCellNum(int num) {
         if (note && clickedCell.getNumber() == 0) {
             setNote(num);
+            return;
+        }
+        else if (note && clickedCell.getNumber() != 0) {
             return;
         }
 
@@ -562,10 +581,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         stopTimer();
         // timeSeconds += (int) (updateTime / 1000);
 
-        String message = String.format(getString(R.string.game_won_message), timeSeconds / 60, timeSeconds % 60);
-        if (stats.getBestTime(difficulty) > timeSeconds || stats.getBestTime(difficulty) == 0)
-            message += " New Best Time!";
-
         if (difficulty == 0)
             stats.addExperience(5);
         if (difficulty == 1)
@@ -575,27 +590,13 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         if (difficulty == 3)
             stats.addExperience(25);
 
-        stats.addPlaytime(timeSeconds);
-        saveRecord(true);
-
         submitTime();
         incrementAchievements();
 
-        new AlertDialog.Builder(this)
-                .setTitle("Game won!")
-                .setMessage(message)
-                .setPositiveButton("New game", (dialog, whichButton) -> {
-                    Intent intent = new Intent();
-                    intent.putExtra("Lost", 0);
-                    setResult(1, intent);
-                    finish();
-                })
-                .setNegativeButton("Choose Difficulty", (dialog, which) -> {
-                    Intent intent = new Intent();
-                    intent.putExtra("Lost", 1);
-                    setResult(2, intent);
-                    finish();
-                }).setCancelable(false).show();
+        Intent intent = new Intent(this, GameWonActivity.class);
+        intent.putExtra("time", timeSeconds);
+        intent.putExtra("difficulty", difficulty);
+        GameWonActivityResultLauncher.launch(intent);
     }
 
 
@@ -643,7 +644,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     private void gameLost() {
         stopTimer();
         enableNumButts(false);
-        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_lose_10_games), 1);
+
 
         timeSeconds += (int) (updateTime / 1000);
 
@@ -700,10 +701,39 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                 if (result.getData().getIntExtra("Ad watched", 0) == 0) {
                     saveRecord(false);
                     stats.addPlaytime(timeSeconds);
+                    PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_lose_10_games), 1);
                     Intent intent = new Intent();
                     intent.putExtra("Lost", 1);
                     setResult(1, intent);
                     finish();
                 }
+            });
+
+
+    final ActivityResultLauncher<Intent> GameWonActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getData().getIntExtra("Game won", 0) == 1) {
+                    if (difficulty == 0)
+                        stats.addExperience(5);
+                    if (difficulty == 1)
+                        stats.addExperience(10);
+                    if (difficulty == 2)
+                        stats.addExperience(15);
+                    if (difficulty == 3)
+                        stats.addExperience(25);
+
+                    stats.addPlaytime(timeSeconds);
+                    saveRecord(true);
+
+                    submitTime();
+                    incrementAchievements();
+                }
+                if (result.getData().getIntExtra("Go home", 0) == 1) {
+                    Intent intent = new Intent();
+                    intent.putExtra("Go home", 1);
+                    setResult(1, intent);
+                }
+                finish();
             });
 }

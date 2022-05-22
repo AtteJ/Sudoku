@@ -16,6 +16,7 @@
     <string name="achievements">Achievements</string>
     <string name="signin">Sign in</string>
     <string name="go_back">Go Back</string>
+    <string name="go_home">Go Home</string>
 
     <string name="game_stats">Game Stats</string>
     <string name="clear_stats">Clear Stats</string>
@@ -26,6 +27,7 @@
     <string name="win_percentage">Win Percentage: %1$d%%</string>
     <string name="games_won">Games Won: %1$d</string>
     <string name="games_played">Games Played: %1$d</string>
+    <string name="game_won">Game Won</string>
     <string name="game_lost">Game Lost</string>
 
     <string name="continue_game">Continue by watching an ad?</string>

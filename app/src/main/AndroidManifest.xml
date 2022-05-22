@@ -41,6 +41,9 @@
             android:name=".LeaderboardActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".GameWonActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".GameLostActivity"
             android:screenOrientation="portrait" />
     </application>

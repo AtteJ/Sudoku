@@ -122,6 +122,7 @@ public class GameDifficultyActivity extends AppCompatActivity {
         findViewById(R.id.buttonNormal).setEnabled(!isDisabled);
         findViewById(R.id.buttonHard).setEnabled(!isDisabled);
         findViewById(R.id.buttonExpert).setEnabled(!isDisabled);
+        findViewById(R.id.buttonSignIn).setEnabled(!isDisabled);
     }
 
 
@@ -137,6 +138,8 @@ public class GameDifficultyActivity extends AppCompatActivity {
             result -> {
                 disableButtons(false);
                 checkAchievements();
+                if (result.getData().getIntExtra("Go home", 0) == 1)
+                    finish();
             });
 
 
@@ -156,7 +159,7 @@ public class GameDifficultyActivity extends AppCompatActivity {
                 return ThreadLocalRandom.current().nextInt(38, 41);
             }
             case 1: {
-                return ThreadLocalRandom.current().nextInt(26, 28);
+                return ThreadLocalRandom.current().nextInt(27, 29);
             }
             case 2: {
                 return ThreadLocalRandom.current().nextInt(21, 23);
