@@ -12,11 +12,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.attej.sudoku.backend.AdManager;
 import com.attej.sudoku.backend.Board;
 import com.attej.sudoku.backend.Cell;
 import com.attej.sudoku.backend.CellGroupFragment;
@@ -82,18 +85,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         setContentView(R.layout.activity_game);
 
         setAnalytics();
-
-        final Handler adHandler = new Handler();
-        final int delay = 4000;
-
-        adHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mRewardedAd == null)
-                    loadAd();
-                adHandler.postDelayed(this, delay);
-            }
-        }, delay);
+        AdManager admanager = new AdManager();
+        admanager.loadAd(this);
 
         leaderboardsClient = PlayGames.getLeaderboardsClient(this);
         stats = new Stats(getApplicationContext());
@@ -148,29 +141,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, message);
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "game_activity");
         mFirebaseAnalytics.logEvent(event, bundle);
-    }
-
-
-    private void loadAd() {
-        AdRequest adRequest = new AdRequest.Builder().build();
-
-        RewardedAd.load(this, "ca-app-pub-6148517439938867/1368714923",
-                adRequest, new RewardedAdLoadCallback() {
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        // Handle the error.
-                        Log.d(TAG, loadAdError.getMessage());
-                        mRewardedAd = null;
-                        recordEvent("ad_loaded_fail", "ad_loaded_fail", "Ad failed to load");
-                    }
-
-                    @Override
-                    public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
-                        mRewardedAd = rewardedAd;
-                        Log.d(TAG, "Ad was loaded.");
-                        recordEvent("ad_loaded", "ad_loaded", "Ad was loaded");
-                    }
-                });
     }
 
 
@@ -282,6 +252,8 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
 
     public void setNote(int num) {
+        if (clickedCell.getNumber() != 0)
+            return;
         clickedCell.setNote(num);
         board.setNote(getSelectedRow(), getSelectedColumn(), num);
     }
@@ -675,23 +647,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
         timeSeconds += (int) (updateTime / 1000);
 
-        new AlertDialog.Builder(this)
-                .setTitle("Game Lost!")
-                .setMessage("Game Lost!")
-                .setPositiveButton("Continue by watching an ad?", (dialog, whichButton) -> {
-                    getNewTry();
-                    startTimer();
-                    enableNumButts(true);
-                    loadAd();
-                })
-                .setNegativeButton("New game?", (dialog, whichButton) -> {
-                    saveRecord(false);
-                    stats.addPlaytime(timeSeconds);
-                    Intent intent = new Intent();
-                    intent.putExtra("Lost", 1);
-                    setResult(1, intent);
-                    finish();
-                }).setCancelable(false).show();
+        Intent intent = new Intent(this, GameLostActivity.class);
+
+        GameLostActivityResultLauncher.launch(intent);
     }
 
 
@@ -705,74 +663,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         }
         stats.addRecord(record);
         stats.saveStats();
-    }
-
-
-    private void getNewTry() {
-        setTestAds();
-        showAd();
-        checkReward();
-    }
-
-
-    private void setTestAds() {
-        List<String> testDeviceIds = Arrays.asList("20D91EB201806F1C7EA6457155F468D8", "62AEE42886038F87608F7F6F5D0B41BA");
-        RequestConfiguration configuration =
-                new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build(); // Test ads
-        MobileAds.setRequestConfiguration(configuration);                                   // Test ads
-    }
-
-
-    private void showAd() {
-        if (mRewardedAd != null)
-            mRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                @Override
-                public void onAdShowedFullScreenContent() {
-                    // Called when ad is shown.
-                    Log.d(TAG, "Ad was shown.");
-                }
-
-                @Override
-                public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
-                    // Called when ad fails to show.
-                    Log.d(TAG, "Ad failed to show.");
-                    Toast.makeText(getApplicationContext(), "Ad failed to load", Toast.LENGTH_SHORT).show();
-                    mistakes--;
-                    updateCounters();
-                }
-
-                @Override
-                public void onAdDismissedFullScreenContent() {
-                    // Called when ad is dismissed.
-                    // Set the ad reference to null so you don't show the ad a second time.
-                    Log.d(TAG, "Ad was dismissed.");
-                    mRewardedAd = null;
-                    updateCounters();
-                }
-            });
-        else {
-
-            mistakes--;
-            updateCounters();
-        }
-    }
-
-
-    private void checkReward() {
-        if (mRewardedAd != null) {
-            Activity activityContext = GameActivity.this;
-            mRewardedAd.show(activityContext, rewardItem -> {
-                // Handle the reward.
-                Log.d(TAG, "The user earned the reward.");
-                recordEvent("rewarded_ad_shown", "rewarded_ad_shown", "User watched rewarded ad");
-                mistakes--;
-                updateCounters();
-            });
-        } else {
-            Log.d(TAG, "The rewarded ad wasn't ready yet.");
-            recordEvent("reward_ad_failed", "reward_ad_failed", "Failed to load rewarded ad");
-            updateCounters();
-        }
     }
 
 
@@ -791,4 +681,29 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         }
 
     };
+
+
+    final ActivityResultLauncher<Intent> GameLostActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getData().getIntExtra("Ad watched", 0) == 1) {
+                    mistakes--;
+                    startTimer();
+                    enableNumButts(true);
+                }
+                if (result.getData().getIntExtra("Ad watched", 0) == 2) {
+                    Toast.makeText(this, "Ad failed to load", Toast.LENGTH_LONG).show();
+                    mistakes--;
+                    startTimer();
+                    enableNumButts(true);
+                }
+                if (result.getData().getIntExtra("Ad watched", 0) == 0) {
+                    saveRecord(false);
+                    stats.addPlaytime(timeSeconds);
+                    Intent intent = new Intent();
+                    intent.putExtra("Lost", 1);
+                    setResult(1, intent);
+                    finish();
+                }
+            });
 }

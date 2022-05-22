@@ -137,10 +137,6 @@ public class GameDifficultyActivity extends AppCompatActivity {
             result -> {
                 disableButtons(false);
                 checkAchievements();
-                if (result.getResultCode() == 1) {
-                    int givens = drawGivens(difficulty);
-                    startGame(givens);
-                }
             });
 
 
@@ -160,13 +156,13 @@ public class GameDifficultyActivity extends AppCompatActivity {
                 return ThreadLocalRandom.current().nextInt(38, 41);
             }
             case 1: {
-                return ThreadLocalRandom.current().nextInt(30, 31);
+                return ThreadLocalRandom.current().nextInt(26, 28);
             }
             case 2: {
-                return ThreadLocalRandom.current().nextInt(24, 27);
+                return ThreadLocalRandom.current().nextInt(21, 23);
             }
             case 3: {
-                return ThreadLocalRandom.current().nextInt(17, 24);
+                return ThreadLocalRandom.current().nextInt(17, 20);
             }
         }
         return 0;
