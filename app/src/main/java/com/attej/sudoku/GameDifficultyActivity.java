@@ -122,7 +122,6 @@ public class GameDifficultyActivity extends AppCompatActivity {
         findViewById(R.id.buttonNormal).setEnabled(!isDisabled);
         findViewById(R.id.buttonHard).setEnabled(!isDisabled);
         findViewById(R.id.buttonExpert).setEnabled(!isDisabled);
-        findViewById(R.id.buttonSignIn).setEnabled(!isDisabled);
     }
 
 

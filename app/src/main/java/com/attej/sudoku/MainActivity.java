@@ -223,15 +223,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void enableButtons(boolean enabled) {
-        Button newGame = findViewById(R.id.buttonStartNewGame);
-        Button stats = findViewById(R.id.buttonViewStats);
-        Button leaderboard = findViewById(R.id.buttonLeaderboard);
-        Button achievements = findViewById(R.id.buttonAchievements);
-
-        newGame.setEnabled(enabled);
-        stats.setEnabled(enabled);
-        leaderboard.setEnabled(enabled);
-        achievements.setEnabled(enabled);
+        findViewById(R.id.buttonStartNewGame).setEnabled(enabled);
+        findViewById(R.id.buttonViewStats).setEnabled(enabled);
+        findViewById(R.id.buttonLeaderboard).setEnabled(enabled);
+        findViewById(R.id.buttonAchievements).setEnabled(enabled);
+        findViewById(R.id.buttonSignIn).setEnabled(enabled);
     }
 
 
