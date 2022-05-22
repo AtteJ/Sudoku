@@ -24,6 +24,10 @@ public class GameWonActivity extends AppCompatActivity {
             TextView textBestTime = findViewById(R.id.textBestTime);
             textBestTime.setText("New Best Time!\n" + String.format("Time: %1$02d:%2$02d", time / 60, time % 60));
         }
+        else {
+            TextView textBestTime = findViewById(R.id.textBestTime);
+            textBestTime.setText(String.format("Time: %1$02d:%2$02d", time / 60, time % 60));
+        }
 
         stats.addPlaytime(time);
         saveRecord(time, difficulty);
@@ -43,6 +47,7 @@ public class GameWonActivity extends AppCompatActivity {
     public void onNewGameButtonClicked(View view) {
         Intent intent = new Intent();
         intent.putExtra("Game won", 1);
+        intent.putExtra("Go home", 0);
         setResult(1, intent);
         finish();
     }

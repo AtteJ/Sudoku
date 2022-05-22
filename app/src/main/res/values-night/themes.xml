@@ -15,7 +15,7 @@
 
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/light_gray</item>
-
+        <item name="android:textColorTertiary">@color/light_gray</item>
 
     </style>
 </resources>

@@ -158,13 +158,13 @@ public class GameDifficultyActivity extends AppCompatActivity {
                 return ThreadLocalRandom.current().nextInt(38, 41);
             }
             case 1: {
-                return ThreadLocalRandom.current().nextInt(27, 29);
+                return ThreadLocalRandom.current().nextInt(28, 31);
             }
             case 2: {
-                return ThreadLocalRandom.current().nextInt(21, 23);
+                return ThreadLocalRandom.current().nextInt(26, 28);
             }
             case 3: {
-                return ThreadLocalRandom.current().nextInt(17, 20);
+                return ThreadLocalRandom.current().nextInt(24, 26);
             }
         }
         return 0;

@@ -93,6 +93,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
         int givens = getIntent().getIntExtra("givens", 0);
         difficulty = getIntent().getIntExtra("difficulty", 0);
+
         createBoard();
         createSudoku(givens);
         addGivens();
@@ -581,15 +582,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         stopTimer();
         // timeSeconds += (int) (updateTime / 1000);
 
-        if (difficulty == 0)
-            stats.addExperience(5);
-        if (difficulty == 1)
-            stats.addExperience(10);
-        if (difficulty == 2)
-            stats.addExperience(15);
-        if (difficulty == 3)
-            stats.addExperience(25);
-
         submitTime();
         incrementAchievements();
 
@@ -728,8 +720,27 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
                     submitTime();
                     incrementAchievements();
+
+                    Intent intent = new Intent();
+                    intent.putExtra("Go home", 0);
+                    setResult(1, intent);
                 }
                 if (result.getData().getIntExtra("Go home", 0) == 1) {
+                    if (difficulty == 0)
+                        stats.addExperience(5);
+                    if (difficulty == 1)
+                        stats.addExperience(10);
+                    if (difficulty == 2)
+                        stats.addExperience(15);
+                    if (difficulty == 3)
+                        stats.addExperience(25);
+
+                    stats.addPlaytime(timeSeconds);
+                    saveRecord(true);
+
+                    submitTime();
+                    incrementAchievements();
+
                     Intent intent = new Intent();
                     intent.putExtra("Go home", 1);
                     setResult(1, intent);

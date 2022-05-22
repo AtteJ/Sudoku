@@ -111,6 +111,7 @@ public class GenerateSudoku {
             if (!checkSolution(gridCopy))
             {
                 copy[row][col] = backup;
+                i--;
             }
         }
         return copy;
