@@ -1,6 +1,5 @@
 package com.attej.sudoku;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,12 +31,12 @@ public class StatsActivity extends AppCompatActivity {
         refreshStats();
     }
 
-    private void recordEvent(String event, String id, String message) {
+    private void recordEvent() {
         Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, id);
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, message);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "stats_cleared");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Stats cleared");
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "main");
-        mFirebaseAnalytics.logEvent(event, bundle);
+        mFirebaseAnalytics.logEvent("stats_cleared", bundle);
     }
 
 
@@ -194,7 +193,7 @@ public class StatsActivity extends AppCompatActivity {
                 .setPositiveButton("Clear stats", (dialog, whichButton) -> {
                     stats.clearStats();
                     refreshStats();
-                    recordEvent("stats_cleared", "stats_cleared", "Stats cleared");
+                    recordEvent();
                 })
                 .setNegativeButton("Cancel", null).show();
     }

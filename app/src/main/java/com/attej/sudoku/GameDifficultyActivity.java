@@ -137,7 +137,7 @@ public class GameDifficultyActivity extends AppCompatActivity {
             result -> {
                 disableButtons(false);
                 checkAchievements();
-                if (result.getData().getIntExtra("Go home", 0) == 1)
+                if (result.getData() != null && result.getData().getIntExtra("Go home", 0) == 1)
                     finish();
             });
 

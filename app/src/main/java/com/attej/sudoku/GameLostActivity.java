@@ -3,7 +3,6 @@ package com.attej.sudoku;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -13,13 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.attej.sudoku.backend.AdManager;
 import com.google.android.gms.ads.AdError;
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.rewarded.RewardedAd;
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.Arrays;
@@ -29,7 +25,7 @@ public class GameLostActivity extends AppCompatActivity {
     FirebaseAnalytics mFirebaseAnalytics;
     private RewardedAd mRewardedAd;
 
-    private String TAG = "GameLostActivity";
+    private final String TAG = "GameLostActivity";
 
 
     @Override

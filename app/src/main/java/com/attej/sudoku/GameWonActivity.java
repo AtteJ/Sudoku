@@ -20,13 +20,15 @@ public class GameWonActivity extends AppCompatActivity {
         int time = getIntent().getIntExtra("time", 0);
         int difficulty = getIntent().getIntExtra("difficulty", 0);
 
+        String solveTime = String.format("Time: %1$02d:%2$02d", time / 60, time % 60);
+
         if (stats.getBestTime(difficulty) > time) {
             TextView textBestTime = findViewById(R.id.textBestTime);
-            textBestTime.setText("New Best Time!\n" + String.format("Time: %1$02d:%2$02d", time / 60, time % 60));
+            textBestTime.setText("New Best Time!\n" + solveTime);
         }
         else {
             TextView textBestTime = findViewById(R.id.textBestTime);
-            textBestTime.setText(String.format("Time: %1$02d:%2$02d", time / 60, time % 60));
+            textBestTime.setText(solveTime);
         }
 
         stats.addPlaytime(time);
@@ -55,6 +57,7 @@ public class GameWonActivity extends AppCompatActivity {
 
     public void onGoHomeButtonClicked(View view) {
         Intent intent = new Intent();
+        intent.putExtra("Game won", 1);
         intent.putExtra("Go home", 1);
         setResult(1, intent);
         finish();

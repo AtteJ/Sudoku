@@ -7,20 +7,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.games.GamesSignInClient;
 import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.games.PlayGamesSdk;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class LeaderboardActivity extends AppCompatActivity {
-    private AdView mAdView;
     GamesSignInClient gamesSignInClient;
 
     @Override
@@ -29,8 +21,6 @@ public class LeaderboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_leaderboard);
 
         setAnalytics();
-        // setTestAds();
-        // setAds();
 
         PlayGamesSdk.initialize(this);
         verifyGamesSignIn();
@@ -40,25 +30,6 @@ public class LeaderboardActivity extends AppCompatActivity {
     private void setAnalytics() {
         // Obtain the FirebaseAnalytics instance.
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-    }
-
-
-    private void setTestAds() {
-        List<String> testDeviceIds = Arrays.asList("20D91EB201806F1C7EA6457155F468D8", "62AEE42886038F87608F7F6F5D0B41BA");
-        RequestConfiguration configuration =
-                new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build(); // Test ads
-        MobileAds.setRequestConfiguration(configuration);                                   // Test ads
-    }
-
-
-    private void setAds() {
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        MobileAds.initialize(this, initializationStatus -> {
-            mAdView.loadAd(adRequest);
-            System.out.println("Is test device: " + adRequest.isTestDevice(this));
-            System.out.println("Ads loaded: " + initializationStatus);
-        });
     }
 
 

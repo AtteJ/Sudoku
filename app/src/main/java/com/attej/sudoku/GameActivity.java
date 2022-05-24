@@ -1,7 +1,6 @@
 package com.attej.sudoku;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,7 +13,6 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
@@ -27,21 +25,11 @@ import com.attej.sudoku.backend.CheckSolution;
 import com.attej.sudoku.backend.GameRecord;
 import com.attej.sudoku.backend.GenerateSudoku;
 import com.attej.sudoku.backend.Stats;
-import com.google.android.gms.ads.AdError;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.RequestConfiguration;
-import com.google.android.gms.ads.rewarded.RewardedAd;
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.gms.games.LeaderboardsClient;
 import com.google.android.gms.games.PlayGames;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 public class GameActivity extends AppCompatActivity implements CellGroupFragment.OnFragmentInteractionListener {
@@ -72,7 +60,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
     private Stats stats;
 
-    private RewardedAd mRewardedAd;
     private final String TAG = "GameActivity";
     FirebaseAnalytics mFirebaseAnalytics;
 
@@ -85,8 +72,7 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
         setContentView(R.layout.activity_game);
 
         setAnalytics();
-        AdManager admanager = new AdManager();
-        admanager.loadAd(this);
+        AdManager.loadAd(this);
 
         leaderboardsClient = PlayGames.getLeaderboardsClient(this);
         stats = new Stats(getApplicationContext());
@@ -149,15 +135,6 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
 
     private void setAnalytics() {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-    }
-
-
-    private void recordEvent(String event, String id, String message) {
-        Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, id);
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, message);
-        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "game_activity");
-        mFirebaseAnalytics.logEvent(event, bundle);
     }
 
 
@@ -402,7 +379,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                     GameRecord record = new GameRecord(-1, difficulty);
                     stats.addRecord(record);
                     stats.saveStats();
-
+                    Intent intent = new Intent();
+                    intent.putExtra("Go home", 0);
+                    setResult(1, intent);
                     finish();
                 })
                 .setNegativeButton(android.R.string.no, null).show();
@@ -418,7 +397,9 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
                     GameRecord record = new GameRecord(-1, difficulty);
                     stats.addRecord(record);
                     stats.saveStats();
-
+                    Intent intent = new Intent();
+                    intent.putExtra("Go home", 0);
+                    setResult(1, intent);
                     finish();
                 })
                 .setNegativeButton("Cancel", null).show();
@@ -678,27 +659,34 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     final ActivityResultLauncher<Intent> GameLostActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getData().getIntExtra("Ad watched", 0) == 1) {
-                    mistakes--;
-                    startTimer();
-                    enableNumButts(true);
-                }
-                if (result.getData().getIntExtra("Ad watched", 0) == 2) {
-                    Toast.makeText(this, "Ad failed to load", Toast.LENGTH_LONG).show();
-                    mistakes--;
-                    startTimer();
-                    enableNumButts(true);
-                }
-                if (result.getData().getIntExtra("Ad watched", 0) == 0) {
-                    submitTime();
-                    incrementAchievements();
-                    saveRecord(false);
-                    stats.addPlaytime(timeSeconds);
-                    PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_lose_10_games), 1);
-                    Intent intent = new Intent();
-                    intent.putExtra("Lost", 1);
-                    setResult(1, intent);
-                    finish();
+                try {
+                    if (result.getData() != null && result.getData().getIntExtra("Ad watched", 0) == 1) {
+                        mistakes--;
+                        startTimer();
+                        updateCounters();
+                        enableNumButts(true);
+                    }
+                    if (result.getData().getIntExtra("Ad watched", 0) == 2) {
+                        Toast.makeText(this, "Ad failed to load", Toast.LENGTH_LONG).show();
+                        mistakes--;
+                        startTimer();
+                        updateCounters();
+                        enableNumButts(true);
+                    }
+                    if (result.getData().getIntExtra("Ad watched", 0) == 0) {
+                        submitTime();
+                        incrementAchievements();
+                        saveRecord(false);
+                        stats.addPlaytime(timeSeconds);
+                        PlayGames.getAchievementsClient(this).increment(getString(R.string.achievement_lose_10_games), 1);
+                        Intent intent = new Intent();
+                        intent.putExtra("Lost", 1);
+                        intent.putExtra("Go home", 0);
+                        setResult(1, intent);
+                        finish();
+                    }
+                } catch (NullPointerException ex) {
+                    ex.printStackTrace();
                 }
             });
 
@@ -706,45 +694,49 @@ public class GameActivity extends AppCompatActivity implements CellGroupFragment
     final ActivityResultLauncher<Intent> GameWonActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getData().getIntExtra("Game won", 0) == 1) {
-                    if (difficulty == 0)
-                        stats.addExperience(5);
-                    if (difficulty == 1)
-                        stats.addExperience(10);
-                    if (difficulty == 2)
-                        stats.addExperience(15);
-                    if (difficulty == 3)
-                        stats.addExperience(25);
+                try {
+                    if (result.getData() != null && result.getData().getIntExtra("Game won", 0) == 1) {
+                        if (difficulty == 0)
+                            stats.addExperience(5);
+                        if (difficulty == 1)
+                            stats.addExperience(10);
+                        if (difficulty == 2)
+                            stats.addExperience(15);
+                        if (difficulty == 3)
+                            stats.addExperience(25);
 
-                    stats.addPlaytime(timeSeconds);
-                    saveRecord(true);
+                        stats.addPlaytime(timeSeconds);
+                        saveRecord(true);
 
-                    submitTime();
-                    incrementAchievements();
+                        submitTime();
+                        incrementAchievements();
 
-                    Intent intent = new Intent();
-                    intent.putExtra("Go home", 0);
-                    setResult(1, intent);
-                }
-                if (result.getData().getIntExtra("Go home", 0) == 1) {
-                    if (difficulty == 0)
-                        stats.addExperience(5);
-                    if (difficulty == 1)
-                        stats.addExperience(10);
-                    if (difficulty == 2)
-                        stats.addExperience(15);
-                    if (difficulty == 3)
-                        stats.addExperience(25);
+                        Intent intent = new Intent();
+                        intent.putExtra("Go home", 0);
+                        setResult(1, intent);
+                    }
+                    if (result.getData().getIntExtra("Go home", 0) == 1) {
+                        if (difficulty == 0)
+                            stats.addExperience(5);
+                        if (difficulty == 1)
+                            stats.addExperience(10);
+                        if (difficulty == 2)
+                            stats.addExperience(15);
+                        if (difficulty == 3)
+                            stats.addExperience(25);
 
-                    stats.addPlaytime(timeSeconds);
-                    saveRecord(true);
+                        stats.addPlaytime(timeSeconds);
+                        saveRecord(true);
 
-                    submitTime();
-                    incrementAchievements();
+                        submitTime();
+                        incrementAchievements();
 
-                    Intent intent = new Intent();
-                    intent.putExtra("Go home", 1);
-                    setResult(1, intent);
+                        Intent intent = new Intent();
+                        intent.putExtra("Go home", 1);
+                        setResult(1, intent);
+                    }
+                } catch (NullPointerException ex) {
+                    ex.printStackTrace();
                 }
                 finish();
             });

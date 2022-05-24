@@ -92,6 +92,7 @@ public class GenerateSudoku {
 
 
     public static int[][] removeNumbers(int[][] grid, int n) {
+        int attempts = 0;
         int[][] copy = copyGrid(grid);
         for (int i = 0; i < n; i++)
         {
@@ -111,7 +112,10 @@ public class GenerateSudoku {
             if (!checkSolution(gridCopy))
             {
                 copy[row][col] = backup;
+                attempts++;
                 i--;
+                if (attempts > 10)
+                    return copy;
             }
         }
         return copy;
